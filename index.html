@@ -1,0 +1,453 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt-br">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="language" content="pt-br" />
+
+
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>		
+	<script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>		
+    <script type="text/javascript">
+        $("document").ready(function() {
+            //alert("The page just loaded!");
+            
+            
+            $(function() {
+            	
+            	// tabs
+				$( "#tabs" ).tabs();
+				$( "#sub-tabs" ).tabs();						
+				
+				// default tabs = icms
+				var tipo_tributo = $("input[name='tributos']:checked").val();
+				if (tipo_tributo == 'icms'){
+					$('#sub-tabs').tabs("option","disabled",[]);
+					$("#sub-tabs").tabs("option", "disabled", [5]);
+				}
+				
+				// toggle de tabs ICMS/ISSQN
+				$("input[name='tributos']").change(function(){
+					tipo_tributo = $("input[name='tributos']:checked").val();
+					if (tipo_tributo == 'icms'){
+						$('#sub-tabs').tabs("option","disabled",[]);
+						$("#sub-tabs").tabs("select",[0]);
+						$("#sub-tabs").tabs("option", "disabled", [5]);
+					}else{
+						
+						$('#sub-tabs').tabs("option","disabled",[]);
+						$("#sub-tabs").tabs("select",[5]);
+						$("#sub-tabs").tabs("option", "disabled", [0,1,4]);
+						
+						
+					}		
+				});
+											
+				// Toggle de regime do ICMS
+				$('.box').hide();			 
+				$('#regime').change(function() {
+					$('.box').hide();
+				    $('#mod_' + $(this).val()).show();
+				});
+				 
+				// exibe os campos do regime padrao: tributacao normal
+				$('#mod_' + $('#regime option:selected').val()).show();	
+				
+				//$("#tabs").tabs("option", "disabled", []);
+
+			});
+			
+		
+			
+
+			
+
+
+			
+			
+        }); //dr        
+    </script>	
+
+	<link rel="stylesheet" href="css/style.css" type="text/css">				
+	<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.18.custom.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+	
+	<title> nfeform </title>
+
+</head>
+<body>
+
+<h1>Form</h1>
+
+<div class="demo">
+
+<div id="tabs">
+	<ul>
+		<li><a href="#tabs-1">Dados</a></li>
+		<li><a href="#tabs-2">Tributos</a></li>
+		<li><a href="#tabs-3">Informações Adicionais</a></li>
+		<li><a href="#tabs-4">Declarações de Importação</a></li>
+		<li><a href="#tabs-5">Formy demo</a></li>
+	</ul>
+	
+	<div id="tabs-1">
+		<fieldset>
+	
+			<label for="codigo">* Código:</label>
+			<input tabindex="1" id="codigo" type="text" name="codigo" /><br />
+			
+			<label for="descricao">* Descrição:</label>
+			<input tabindex="1" id="descricao" type="text" name="descricao" /><br />
+
+
+			
+			<label for="ncm">* NCM:</label>
+			<input tabindex="1" id="ncm" type="text" name="ncm" /><br />								
+
+			<label for="ex_tipi">EX TIPI:</label>
+			<input tabindex="1" id="ex_tipi" type="text" name="ex_tipi" /><br />						
+			
+			<label for="cfop">* CFOP:</label>
+			<input tabindex="1" id="cfop" type="text" name="cfop" /><br />						
+
+			
+
+			<label for="un_comercial">* Un. Comercial:</label>
+			<input tabindex="1" id="un_comercial" type="text" name="un_comercial" /><br />			
+			
+			<label for="qtd_comercial">* Qtd. Comercial:</label>
+			<input tabindex="1" id="qtd_comercial" type="text" name="qtd_comercial" /><br />	
+			
+			<label for="valor_unit_comercial">* Valor Unit. Comercial:</label>
+			<input tabindex="1" id="valor_unit_comercial" type="text" name="valor_unit_comercial" /><br />	
+			
+
+			
+			<label for="un_trib">* Un. Trib:</label>
+			<input tabindex="1" id="un_trib" type="text" name="un_trib" /><br />	
+			
+			<label for="qtd_trib">* Qtd. Trib:</label>
+			<input tabindex="1" id="qtd_trib" type="text" name="qtd_trib" /><br />	
+			
+			<label for="valor_unt_trib">* Valor Unt. Trib:</label>
+			<input tabindex="1" id="valor_unt_trib" type="text" name="valor_unt_trib" /><br />	
+			
+		</fieldset>		
+		
+		<fieldset>
+			<label for="tot_seguro">Tot. Seguro:</label>
+			<input tabindex="1" id="tot_seguro" type="text" name="tot_seguro" /><br />		
+			
+			<label for="desconto">Desconto:</label>
+			<input tabindex="1" id="desconto" type="text" name="desconto" /><br />			
+			
+			<label for="tot_frete">Tot. Frete:</label>
+			<input tabindex="1" id="tot_frete" type="text" name="tot_frete" /><br />			
+										
+			
+			<label for="ean">EAN:</label>
+			<input tabindex="1" id="ean" type="text" name="ean" /><br />			
+			
+			<label for="ean_trib">EAN Trib.:</label>
+			<input tabindex="1" id="ean_trib" type="text" name="ean_trib" /><br />	
+			
+			<label for="outras_desp_acessorias">Outras Desp. Acessórias:</label>
+			<input tabindex="1" id="outras_desp_acessorias" type="text" name="outras_desp_acessorias" /><br />	
+			
+			
+			<label for="valor_tot_bruto">* Valor Tot. Bruto:</label>
+			<input tabindex="1" id="valor_tot_bruto" type="text" name="valor_tot_bruto" /><br />																				
+			
+
+			<input tabindex="1" type="checkbox" name="valot_total_bruto_compoe"  value="sim" checked /> Valor Total Bruto Compõe o Valor Total dos Produtos e Serviços<br />
+			
+
+			<label for="pedido_de_compra">Pedido de Compra:</label>
+			<input tabindex="1" id="pedido_de_compra" type="text" name="pedido_de_compra" /><br />
+			
+			<label for="numero_do_item_do_pedido_de_compra">Número do Item do Pedido de Compra:</label>
+			<input tabindex="1" id="numero_do_item_do_pedido_de_compra" type="text" name="numero_do_item_do_pedido_de_compra" /><br />
+			
+			
+
+		<label  for="produto_especifco">Produto Específico:</label>
+			<select id="produto_especifco" size="1"  name="produto_especifco">
+
+		          <option selected="selected" value=""></option>
+		          <option value="veiculo">Veículo</option>
+		          <option value="medicamento">Medicamento</option>
+		          <option value="armamento">Armamento</option>
+		          <option value="combustivel">Combustível</option>
+
+		      </select>
+		<br />
+			
+						
+		
+		</fieldset>		
+	</div><!-- tabs-1 end -->
+	
+	
+	
+	<div id="tabs-2">
+		<fieldset>	
+	
+			<input tabindex="7" type="radio" id="tributos" name="tributos" value="icms" checked />ICMS<br />
+			<input tabindex="8" type="radio" id="tributos" name="tributos"  value="issqn" />ISSQN<br />
+		
+			<div id="sub-tabs">
+				<ul>
+					<li><a href="#sub-tabs-1">ICMS</a></li>
+					<li><a href="#sub-tabs-2">IPI</a></li>
+					<li><a href="#sub-tabs-3">PIS</a></li>
+					<li><a href="#sub-tabs-4">CONFINS</a></li>
+					<li><a href="#sub-tabs-5">Imposto de Importação</a></li>
+					<li><a href="#sub-tabs-6">ISSQN</a></li>
+				</ul>			
+				<div id="sub-tabs-1">
+					<label for="Lorem">Regime:</label>
+					
+					<!-- // TOGGLE SELECT -->
+					<select tabindex="5" id="regime"  name="regime">
+						<option selected="selected" value="tributacao_normal">Tributação Normal</option>
+						<option value="simples_nacional">Simples Nacional</option>
+					</select>
+					
+					<div id="mod_tributacao_normal" class="box">
+						<p>tributação normal</p>
+					</div>
+					
+					<div id="mod_simples_nacional" class="box">
+						<p>simples nacional</p>
+					</div>
+					
+					
+				</div><!-- sub-tabs-1 end -->			
+				
+				<div id="sub-tabs-2">
+					yyy
+				</div><!-- sub-tabs-2 end -->						
+
+				<div id="sub-tabs-3">
+					xxx
+				</div><!-- sub-tabs-3 end -->	
+				
+				<div id="sub-tabs-4">
+					xxx
+				</div><!-- sub-tabs-4 end -->	
+				
+				<div id="sub-tabs-5">
+					xxx
+				</div><!-- sub-tabs-5 end -->	
+				
+				<div id="sub-tabs-6">
+					xxx
+				</div><!-- sub-tabs-6 end -->	
+																				
+			</div><!-- sub-tabs end -->
+				
+		
+		 
+		<br />
+		
+		</fieldset>	
+	</div><!-- tabs-2 end -->
+	
+	<div id="tabs-3">
+		<fieldset>
+			<label for="Message">Informações Adicionais:</label>
+			<textarea tabindex="4" id="informacoes_adicionais" name="informacoes_adicionais" rows="10" cols="40"></textarea><br />
+		</fieldset>					
+	</div><!-- tabs-3 end -->
+
+	<div id="tabs-4">
+		<p>O que entra aqui?</p>
+	</div><!-- tabs-4 end -->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div id="tabs-5">
+		<form  method="post" action="">
+		<fieldset>
+		<legend>Vertical  form </legend>
+		
+			<label for="Name">Name:</label>
+			<input tabindex="1" id="Name" type="text" name="Name" /><br />
+					
+			<label for="City">City:</label>
+			<input tabindex="2" id="City" type="text" name="City" /><br />
+			
+			<label  for="Email" >Email:</label>
+			<input tabindex="3" id="Email" type="text" name="Email" /><br />
+						
+			<label for="Message">Message:</label>
+			<textarea tabindex="4" id="Message" name="Message" rows="20" cols="20"></textarea><br />
+			
+		
+			
+		<label for="Lorem">Message:</label>
+			<select tabindex="5" id="lorem"  name="Lorem ipsum">
+				<option selected="selected" value="1">Lorem ipsum</option>
+				<option value="2">dolor sit amet</option>
+				<option value="3"> consectetuer adipiscing</option>
+				<option value="4">vitae diam</option>
+				<option value="5">Vestibulum ornare</option>
+			</select>
+			
+			
+			
+		<br>
+		<label  for="Pellentesque">Pellentesque habitant:</label>
+			<select tabindex="6" id="Pellentesque" size="1"  name="select">
+		          <optgroup label="Lorem ipsum1">
+		          <option selected="selected" value="1">Nunc urna nulla</option>
+		          <option value="2">ultrices sit amet</option>
+		          <option value="3">cursus faucibus</option>
+		          <option value="4">tincidunt pellentesque</option>
+		          <option value="5">ante</option>
+		          </optgroup>
+		          <optgroup label="Lorem ipsum2">
+		          <option selected="selected" value="6">Nunc ac diam</option>
+		          <option value="7">Donec orci risus</option>
+		          <option value="8">malesuada quis</option>
+		          <option value="9">vulputate eu</option>
+		          <option value="10">lacinia in</option>
+		          </optgroup>
+		      </select>
+		<br />
+		<br />
+		<label>Lorem ipsum1:</label>
+			<input tabindex="7" type="radio" name="radioSet" value="uno" />Uno<br />
+			<input tabindex="8" type="radio" name="radioSet"  value="due" />Due<br />
+			<input tabindex="9" type="radio" name="radioSet"  value="tre" />Tre<br />
+			<br />
+			<label>Lorem ipsum2:</label>
+			<input tabindex="10" type="checkbox" name="checkSet"  value="one" /> One<br />
+			<input tabindex="11" type="checkbox" name="checkSet"  value="two" /> Two<br />
+			<input tabindex="12" type="checkbox" name="checkSet"  value="three" /> Three<br />
+		
+		
+		
+		 
+		<br />
+			<input tabindex="12"  type="submit" name="submit" value="Submit"  />
+			
+		</fieldset>
+		</form>		
+	</div><!-- tabs-5 end -->	
+		
+</div>
+
+</div><!-- End demo -->
+
+
+
+
+
+
+
+<!--
+
+
+
+		<form  method="post" action="">
+		<fieldset>
+		<legend>Vertical  form </legend>
+		
+			<label for="Name">Name:</label>
+			<input tabindex="1" id="Name" type="text" name="Name" /><br />
+					
+			<label for="City">City:</label>
+			<input tabindex="2" id="City" type="text" name="City" /><br />
+			
+			<label  for="Email" >Email:</label>
+			<input tabindex="3" id="Email" type="text" name="Email" /><br />
+						
+			<label for="Message">Message:</label>
+			<textarea tabindex="4" id="Message" name="Message" rows="20" cols="20"></textarea><br />
+			
+		
+			
+		<label for="Lorem">Message:</label>
+			<select tabindex="5" id="lorem"  name="Lorem ipsum">
+				<option selected="selected" value="1">Lorem ipsum</option>
+				<option value="2">dolor sit amet</option>
+				<option value="3"> consectetuer adipiscing</option>
+				<option value="4">vitae diam</option>
+				<option value="5">Vestibulum ornare</option>
+			</select>
+			
+			
+			
+		<br>
+		<label  for="Pellentesque">Pellentesque habitant:</label>
+			<select tabindex="6" id="Pellentesque" size="1"  name="select">
+		          <optgroup label="Lorem ipsum1">
+		          <option selected="selected" value="1">Nunc urna nulla</option>
+		          <option value="2">ultrices sit amet</option>
+		          <option value="3">cursus faucibus</option>
+		          <option value="4">tincidunt pellentesque</option>
+		          <option value="5">ante</option>
+		          </optgroup>
+		          <optgroup label="Lorem ipsum2">
+		          <option selected="selected" value="6">Nunc ac diam</option>
+		          <option value="7">Donec orci risus</option>
+		          <option value="8">malesuada quis</option>
+		          <option value="9">vulputate eu</option>
+		          <option value="10">lacinia in</option>
+		          </optgroup>
+		      </select>
+		<br />
+		<br />
+		<label>Lorem ipsum1:</label>
+			<input tabindex="7" type="radio" name="radioSet" value="uno" />Uno<br />
+			<input tabindex="8" type="radio" name="radioSet"  value="due" />Due<br />
+			<input tabindex="9" type="radio" name="radioSet"  value="tre" />Tre<br />
+			<br />
+			<label>Lorem ipsum2:</label>
+			<input tabindex="10" type="checkbox" name="checkSet"  value="one" /> One<br />
+			<input tabindex="11" type="checkbox" name="checkSet"  value="two" /> Two<br />
+			<input tabindex="12" type="checkbox" name="checkSet"  value="three" /> Three<br />
+		
+		
+		
+		 
+		<br />
+			<input tabindex="12"  type="submit" name="submit" value="Submit"  />
+			
+		</fieldset>
+		</form>
+	-->
+		
+<input tabindex="12"  type="submit" name="submit" value="Submit"  />
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+</body>
+</html>
