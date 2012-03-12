@@ -1,11 +1,6 @@
 /*
-                           ___ __  
-| _ |_  _  _ _ |_ _  _. _    /  _) 
-|(_||_)(_)| (_||_(_)| |(_)  /  /__ 
-             www.laboratorio72.com
-             
 Version: 1.0
-Author: Mateus Reis                                                 
+Author: Mateus Reis                                 
 
 */
 
@@ -26,7 +21,7 @@ legend
 
 
 label	 
-	{ float:left; width:200px; display:block; clear:right; margin-right:1em; text-align:right;  cursor:hand; }
+	{ float:left;  display:block; clear:right; margin-right:1em; text-align:right;  cursor:hand; }
 
 textarea, input, select, label, button, optgroup
 	{ margin-top:5px; }
@@ -50,13 +45,13 @@ textarea
 	{ border: 1px solid #666; }
 
 textarea:focus, input[type="text"]:focus  
-	{ border: 2px solid #666; }
+	{ border: 1px solid #666; }
 
 select
 	{  background-color: #fff; color: #000; }
 
 input[type="text"]
-	{ border: 1px solid #666; }
+	{ border: 1px solid #666;padding:2px; }
 
 input[type="submit"]
 	{  background-color: #ccc; color: #333; }
@@ -80,4 +75,35 @@ body{
 font-size:11px;
 }
 
+label {
+background-color:#f4f4f4;
+/*width:200px;*/
+}
 
+#box_101, #box_102, #box_103, #box_201, #box_202, #box_203, #box_300, #box_400, #box_500, #box_900{
+border:solid 2px #ccc;
+padding:10px;
+margin:10px 0 0 0;
+}
+
+#box_00,#box_10a,#box_10b,#box_20,#box_30,#box_40,#box_41a,#box_41b{
+border:solid 2px #ccc;
+padding:10px;
+margin:10px 0 0 0;
+}
+
+
+sup{
+font-weight:bold;
+color:#d00;	
+}
+
+
+label{
+width:50%;
+}
+
+select, 
+input[type="text"]{
+width:100px;
+}

@@ -9,39 +9,35 @@
 	<script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>		
     <script type="text/javascript">
         $("document").ready(function() {
-            //alert("The page just loaded!");
+            //alert("The page just loaded!");           
             
-            
-            $(function() {
-            	
+            $(function() {            	
             	// tabs
 				$( "#tabs" ).tabs();
 				$( "#sub-tabs" ).tabs();						
 				
 				// default tabs = icms
-				var tipo_tributo = $("input[name='tributos']:checked").val();
-				if (tipo_tributo == 'icms'){
+				var tipo_tributo = $("select[name='tributos']").val();
+				if (tipo_tributo == 'mod_icms'){
 					$('#sub-tabs').tabs("option","disabled",[]);
 					$("#sub-tabs").tabs("option", "disabled", [5]);
 				}
 				
 				// toggle de tabs ICMS/ISSQN
-				$("input[name='tributos']").change(function(){
-					tipo_tributo = $("input[name='tributos']:checked").val();
-					if (tipo_tributo == 'icms'){
+				$("#tributos").change(function(){
+					var tipo_tributo = $("select[name='tributos']").val();
+					if (tipo_tributo == 'mod_icms'){
 						$('#sub-tabs').tabs("option","disabled",[]);
 						$("#sub-tabs").tabs("select",[0]);
 						$("#sub-tabs").tabs("option", "disabled", [5]);
-					}else{
-						
+					}else{						
 						$('#sub-tabs').tabs("option","disabled",[]);
 						$("#sub-tabs").tabs("select",[5]);
 						$("#sub-tabs").tabs("option", "disabled", [0,1,4]);
-						
-						
 					}		
 				});
-											
+				
+				// ----			
 				// Toggle de regime do ICMS
 				$('.box').hide();			 
 				$('#regime').change(function() {
@@ -52,148 +48,195 @@
 				// exibe os campos do regime padrao: tributacao normal
 				$('#mod_' + $('#regime option:selected').val()).show();	
 				
-				//$("#tabs").tabs("option", "disabled", []);
+				// ----			
+				// Toggle de 'tributacao normal'
+				$('.box_tn').hide();			 
+				$('#tributacao_normal_situacao_tributaria').change(function() {
+					$('.box_tn').hide();
+				    $('#box_' + $(this).val()).show();
+				});
+				 
+				// exibe os campos do regime padrao: tributacao normal
+				$('#box_' + $('#tributacao_normal_situacao_tributaria option:selected').val()).show();	
+				
+				// ----			
+				// Toggle de 'simples nacional'
+				$('.box_sn').hide();			 
+				$('#simples_nacional_situacao_tributaria').change(function() {
+					$('.box_sn').hide();
+				    $('#box_' + $(this).val()).show();
+				});
 
+				// exibe os campos do regime padrao: tributacao normal
+				$('#box_' + $('#simples_nacional_situacao_tributaria option:selected').val()).show();	
 			});
-			
+
+
+
+            //Verifica duplicidade de names
+            var nomes = new Object();
+            $("#frmCriaFilho").find("input,textarea,select").each(function(){
+    			eval( "if( nomes." + $(this).attr('name')+" == true )cl('Já tem: "+$(this).attr('name')+"');");
+    			eval( " nomes." + $(this).attr('name')+" = true;" );
+            });
+
+        });
 		
-			
-
-			
-
-
-			
-			
-        }); //dr        
+        function cl(str){console.log(str);}
     </script>	
+
+
 
 	<link rel="stylesheet" href="css/style.css" type="text/css">				
 	<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.18.custom.css" type="text/css" media="screen" title="no title" charset="utf-8">
-
 	
+	<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+		
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
+	<script type="text/javascript" src="js/jquery.json-2.3.js"></script>
+	<script type="text/javascript" src="js/functions.js"></script>
+	
+	<script type="text/javascript" src="js/processos.js"></script> 
+	
+	<style type="text/css">
+		/*demo page css*/
+		body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+		.demoHeaders { margin-top: 2em; }
+		#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+		#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+		ul#icons {margin: 0; padding: 0;}
+		ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+		ul#icons span.ui-icon {float: left; margin: 0 4px;}
+	</style>	
+		
 	<title> nfeform </title>
 
 </head>
 <body>
+<!--<table border='1' id='table-familia'>
+	<tr id='paizao'><th>numero</th><th>Nome</th><th>Ação</th></tr>
+</table>
 
-<h1>Form</h1>
+<p><a href="#" id="dialog_link" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-newwin"></span>Open Dialog</a></p>
 
-<div class="demo">
-
+  style='display: none'   id="dialog" -->
+<div class="demo" >
+<form id="frmCriaFilho">
 <div id="tabs">
 	<ul>
 		<li><a href="#tabs-1">Dados</a></li>
 		<li><a href="#tabs-2">Tributos</a></li>
 		<li><a href="#tabs-3">Informações Adicionais</a></li>
 		<li><a href="#tabs-4">Declarações de Importação</a></li>
-		<li><a href="#tabs-5">Formy demo</a></li>
 	</ul>
-	
+
+	<!-- tabs-1 -->
 	<div id="tabs-1">
 		<fieldset>
 	
 			<label for="codigo">* Código:</label>
-			<input tabindex="1" id="codigo" type="text" name="codigo" /><br />
+			<input  id="codigo" type="text" name="codigo" /><br />
 			
 			<label for="descricao">* Descrição:</label>
-			<input tabindex="1" id="descricao" type="text" name="descricao" /><br />
+			<input  id="descricao" type="text" name="descricao" /><br />
 
 
 			
 			<label for="ncm">* NCM:</label>
-			<input tabindex="1" id="ncm" type="text" name="ncm" /><br />								
+			<input  id="ncm" type="text" name="ncm" /><br />								
 
 			<label for="ex_tipi">EX TIPI:</label>
-			<input tabindex="1" id="ex_tipi" type="text" name="ex_tipi" /><br />						
+			<input  id="ex_tipi" type="text" name="ex_tipi" /><br />						
 			
 			<label for="cfop">* CFOP:</label>
-			<input tabindex="1" id="cfop" type="text" name="cfop" /><br />						
+			<input  id="cfop" type="text" name="cfop" /><br />						
 
 			
 
 			<label for="un_comercial">* Un. Comercial:</label>
-			<input tabindex="1" id="un_comercial" type="text" name="un_comercial" /><br />			
+			<input  id="un_comercial" type="text" name="un_comercial" /><br />			
 			
 			<label for="qtd_comercial">* Qtd. Comercial:</label>
-			<input tabindex="1" id="qtd_comercial" type="text" name="qtd_comercial" /><br />	
+			<input  id="qtd_comercial" type="text" name="qtd_comercial" /><br />	
 			
 			<label for="valor_unit_comercial">* Valor Unit. Comercial:</label>
-			<input tabindex="1" id="valor_unit_comercial" type="text" name="valor_unit_comercial" /><br />	
+			<input  id="valor_unit_comercial" type="text" name="valor_unit_comercial" /><br />	
 			
 
 			
 			<label for="un_trib">* Un. Trib:</label>
-			<input tabindex="1" id="un_trib" type="text" name="un_trib" /><br />	
+			<input  id="un_trib" type="text" name="un_trib" /><br />	
 			
 			<label for="qtd_trib">* Qtd. Trib:</label>
-			<input tabindex="1" id="qtd_trib" type="text" name="qtd_trib" /><br />	
+			<input  id="qtd_trib" type="text" name="qtd_trib" /><br />	
 			
 			<label for="valor_unt_trib">* Valor Unt. Trib:</label>
-			<input tabindex="1" id="valor_unt_trib" type="text" name="valor_unt_trib" /><br />	
+			<input  id="valor_unt_trib" type="text" name="valor_unt_trib" /><br />	
 			
 		</fieldset>		
 		
 		<fieldset>
 			<label for="tot_seguro">Tot. Seguro:</label>
-			<input tabindex="1" id="tot_seguro" type="text" name="tot_seguro" /><br />		
+			<input  id="tot_seguro" type="text" name="tot_seguro" /><br />		
 			
 			<label for="desconto">Desconto:</label>
-			<input tabindex="1" id="desconto" type="text" name="desconto" /><br />			
+			<input  id="desconto" type="text" name="desconto" /><br />			
 			
 			<label for="tot_frete">Tot. Frete:</label>
-			<input tabindex="1" id="tot_frete" type="text" name="tot_frete" /><br />			
+			<input  id="tot_frete" type="text" name="tot_frete" /><br />			
 										
 			
 			<label for="ean">EAN:</label>
-			<input tabindex="1" id="ean" type="text" name="ean" /><br />			
+			<input  id="ean" type="text" name="ean" /><br />			
 			
 			<label for="ean_trib">EAN Trib.:</label>
-			<input tabindex="1" id="ean_trib" type="text" name="ean_trib" /><br />	
+			<input  id="ean_trib" type="text" name="ean_trib" /><br />	
 			
 			<label for="outras_desp_acessorias">Outras Desp. Acessórias:</label>
-			<input tabindex="1" id="outras_desp_acessorias" type="text" name="outras_desp_acessorias" /><br />	
+			<input  id="outras_desp_acessorias" type="text" name="outras_desp_acessorias" /><br />	
 			
 			
 			<label for="valor_tot_bruto">* Valor Tot. Bruto:</label>
-			<input tabindex="1" id="valor_tot_bruto" type="text" name="valor_tot_bruto" /><br />																				
+			<input  id="valor_tot_bruto" type="text" name="valor_tot_bruto" /><br />																				
 			
 
-			<input tabindex="1" type="checkbox" name="valot_total_bruto_compoe"  value="sim" checked /> Valor Total Bruto Compõe o Valor Total dos Produtos e Serviços<br />
+			<input  type="checkbox" name="valot_total_bruto_compoe"  value="sim" checked /> Valor Total Bruto Compõe o Valor Total dos Produtos e Serviços<br />
 			
 
 			<label for="pedido_de_compra">Pedido de Compra:</label>
-			<input tabindex="1" id="pedido_de_compra" type="text" name="pedido_de_compra" /><br />
+			<input  id="pedido_de_compra" type="text" name="pedido_de_compra" /><br />
 			
 			<label for="numero_do_item_do_pedido_de_compra">Número do Item do Pedido de Compra:</label>
-			<input tabindex="1" id="numero_do_item_do_pedido_de_compra" type="text" name="numero_do_item_do_pedido_de_compra" /><br />
-			
-			
+			<input  id="numero_do_item_do_pedido_de_compra" type="text" name="numero_do_item_do_pedido_de_compra" /><br />
 
 		<label  for="produto_especifco">Produto Específico:</label>
 			<select id="produto_especifco" size="1"  name="produto_especifco">
-
 		          <option selected="selected" value=""></option>
 		          <option value="veiculo">Veículo</option>
 		          <option value="medicamento">Medicamento</option>
 		          <option value="armamento">Armamento</option>
 		          <option value="combustivel">Combustível</option>
-
 		      </select>
+		
 		<br />
-			
-						
 		
 		</fieldset>		
 	</div><!-- tabs-1 end -->
 	
-	
-	
+	<!-- tabs-2 -->
 	<div id="tabs-2">
 		<fieldset>	
-	
-			<input tabindex="7" type="radio" id="tributos" name="tributos" value="icms" checked />ICMS<br />
-			<input tabindex="8" type="radio" id="tributos" name="tributos"  value="issqn" />ISSQN<br />
-		
+			
+			
+			
+
+			<select id="tributos" size="1"  name="tributos">
+
+		          <option value="mod_icms" selected>ICMS</option>
+		          <option value="mod_issqn">ISSQN</option>
+		      </select>			
+			
 			<div id="sub-tabs">
 				<ul>
 					<li><a href="#sub-tabs-1">ICMS</a></li>
@@ -202,45 +245,1121 @@
 					<li><a href="#sub-tabs-4">CONFINS</a></li>
 					<li><a href="#sub-tabs-5">Imposto de Importação</a></li>
 					<li><a href="#sub-tabs-6">ISSQN</a></li>
-				</ul>			
+				</ul>	
+				
+				<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+				<!-- ICMS -->
+				
 				<div id="sub-tabs-1">
 					<label for="Lorem">Regime:</label>
 					
 					<!-- // TOGGLE SELECT -->
-					<select tabindex="5" id="regime"  name="regime">
+					<select  id="regime"  name="regime">
 						<option selected="selected" value="tributacao_normal">Tributação Normal</option>
 						<option value="simples_nacional">Simples Nacional</option>
 					</select>
 					
+					<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+					<!-- tributação normal -->
 					<div id="mod_tributacao_normal" class="box">
-						<p>tributação normal</p>
-					</div>
+						<h3>Tributação normal</h3>
+						
+						<label for="tributacao_normal_situacao_tributaria">* Situação Tributária:</label>
+							<select id="tributacao_normal_situacao_tributaria" size="1"  name="tributacao_normal_situacao_tributaria">
+								
+						    <option selected="selected" value=""></option>
+							<option value="00">00 - Tributada integralmente</option>
+							<option value="tn10a">10 - Tributada com cobrança do ICMS por ST</option>
+							<option value="tn10b">10 - Tributada com cobrança do ICMS por ST (com partilha do ICMS entre a UF de origem e a UF de destino ou a UF definida na legistação)</option>
+							<option value="20">20 - com redução da base de cálculo</option>
+							<option value="30">30 - Isenta ou não tributada e com cobrança do ICMS por ST</option>
+							<option value="40">40 - Isenta</option>
+							<option value="41a">41 - Não tributada</option>
+							<option value="41b">41 - Não tributada (ICMSST devido para a UF de destino, nas operações interestaduais de produtos que tiveram retenção antecipada de ICMS por ST na UF do remetente)</option>
+														
+						      </select>
+						<br />				
+						
+						<label for="tn_origem">* Origem:</label>
+							<select id="tn_origem" size="1"  name="tn_origem">				
+						    <option selected="selected" value=""></option>
+						    <option value="nacional">Nacional</option>
+						    <option value="estrangeira_importacao_direta">Estrangeira - Importação Direta</option>
+						    <option value="estrangeira_adquirida_no_mercado_interno">Estrangeira - Adquirida no Mercado Interno</option>
+						    </select>
+						<br />				
+												
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 00 -->						
+						<div id="box_00" class="box_tn">
+							
+							<h3>ICMS 00</h3>
+								
+							<label for="tn00_modalid_de_determ_da_bc_icms">* Modalid. de determ. da BC ICMS:</label>
+								<select id="tn00_modalid_de_determ_da_bc_icms" size="1"  name="tn00_modalid_de_determ_da_bc_icms">				
+							    <option selected="selected" value=""></option>
+								<option value="margem_valor_agregado">Margem Valor Agregado</option>
+								<option value="pauta_valor">Pauta (valor)</option>
+								<option value="preco_tabelado_max_valor">Preço Tabelado Máx. (valor)</option>
+								<option value="valor_da_operacao">Valor da Operação</option>									    
+	
+							</select>
+							<br />	
+							
+							<label for="tn00_bc_icms">* BC ICMS  <sup>1</sup>:</label>
+							<input  id="tn00_bc_icms" type="text" name="bc_icms" /><br />	
+							
+							<label for="tn00_aliquota_do_icms">* Alíquota do ICMS:</label>
+							<input  id="tn00_aliquota_do_icms" type="text" name="tn00_aliquota_do_icms" /><br />	
+							
+							<label for="tn00_icms">* ICMS:</label>
+							<input  id="tn00_icms" type="text" name="tn00_icms" /><br />																														
+							<p><span class="obs"><sup>1</sup>Atenção: a Base de Cálculo do produto deve ser informada contemplando todos os valores previstos na legislação pertinente, ainda que algumas de suas parcelas tenham sido informadas em campos específicos (frete, seguro, desconto, IPI, Outras Despesas Acessórias, etc).</span></p>
+								
+						</div>		
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 10a -->						
+						<div id="box_10a" class="box_tn">
+							
+							<h3>ICMS</h3>
+								
+							<label for="tn10a_modalid_de_determ_da_bc_icms">* Modalid. de determ. da BC ICMS:</label>
+								<select id="tn10a_modalid_de_determ_da_bc_icms" size="1"  name="tn10a_modalid_de_determ_da_bc_icms">				
+							    <option selected="selected" value=""></option>
+
+								<option value="margem_valor_agregado">Margem Valor Agregado</option>
+								<option value="pauta_valor">Pauta (valor)</option>
+								<option value="preco_tabelado_max_valor">Preço Tabelado Máx. (valor)</option>
+								<option value="valor_da_operacao">Valor da Operação</option>									    
+								
+							</select>
+							<br />	
+							
+		
+							
+							<label for="tn10a_bc_icms">* BC ICMS  <sup>1</sup>:</label>
+							<input  id="tn10a_bc_icms" type="text" name="tn10a_bc_icms" /><br />	
+							
+							<label for="tn10a_aliquota_do_icms">* Alíquota do ICMS:</label>
+							<input  id="tn10a_aliquota_do_icms" type="text" name="tn10a_aliquota_do_icms" /><br />	
+							
+							<label for="tn10a_icms">* ICMS:</label>
+							<input  id="tn10a_icms" type="text" name="tn10a_icms" /><br />																																			<span class="obs"><sup>1</sup>Atenção: a Base de Cálculo do produto deve ser informada contemplando todos os valores previstos na legislação pertinente, ainda que algumas de suas parcelas tenham sido informadas em campos específicos (frete, seguro, desconto, IPI, Outras Despesas Acessórias, etc).</span>
+							
+							
+							<h3>ICMS ST</h3>
+							
+							<label for="tn10a_modalid_de_determ_da_bc_icms_st">* Modalid. de determ. da BC ICMS ST:</label>
+								<select id="tn10a_modalid_de_determ_da_bc_icms_st" size="1"  name="tn10a_modalid_de_determ_da_bc_icms_st">				
+							    <option selected="selected" value=""></option>
+							    <option value="preco_tabelado_ou_maximo_sugerido">Preço Tabelado ou Máximo sugerido</option>
+							    <option value="lista_negativa_valor">Lista Negativa (valor)</option>
+							    <option value="lista_positiva_valor">Lista Positiva (valor)</option>
+							    <option value="lista_neutra_valor">Lista Neutra (valor)</option>
+							    <option value="margem_valor_agregado">Margem Valor Agregado (%)</option>
+							    <option value="pauta_valor">Pauta (valor)</option>
+
+							    </select>
+							<br />									
+	
+								
+								<label for="tn10a_reducao_da_bc_icms_st">% redução da BC ICMS ST:</label>
+								<input  id="tn10a_reducao_da_bc_icms_st" type="text" name="tn10a_reducao_da_bc_icms_st" /><br />
+								
+								<label for="tn10a_margem_de_valor_adic_icms_st">% margem de valor adic. ICMS ST:</label>
+								<input  id="tn10a_margem_de_valor_adic_icms_st" type="text" name="tn10a_margem_de_valor_adic_icms_st" /><br />
+								
+								<label for="tn10a_bc_icms_st">* BC ICMS ST:</label>
+								<input  id="tn10a_bc_icms_st" type="text" name="tn10a_bc_icms_st" /><br />
+								
+								<label for="tn10a_aliquota_do_icms_st">* Alíquota do ICMS ST:</label>
+								<input  id="tn10a_aliquota_do_icms_st" type="text" name="tn10a_aliquota_do_icms_st" /><br />
+								
+								<label for="tn10a_icms_st">* ICMS ST:</label>
+								<input  id="tn10a_icms_st" type="text" name="tn10a_icms_st" /><br />																															
+							
+														
+								
+						</div>		
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 10b -->						
+						<div id="box_10b" class="box_tn">
+
+							
+							<h3>ICMS</h3>
+								
+							<label for="tn10b_modalid_de_determ_da_bc_icms">* Modalid. de determ. da BC ICMS:</label>
+								<select id="tn10b_modalid_de_determ_da_bc_icms" size="1"  name="tn10b_modalid_de_determ_da_bc_icms">				
+							    <option selected="selected" value=""></option>
+
+								<option value="margem_valor_agregado">Margem Valor Agregado</option>
+								<option value="pauta_valor">Pauta (valor)</option>
+								<option value="preco_tabelado_max_valor">Preço Tabelado Máx. (valor)</option>
+								<option value="valor_da_operacao">Valor da Operação</option>									    
+								
+							</select>
+							<br />	
+							
+							
+							<label for="tn10b_reducao_da_bc_icms">% redução da BC ICMS:</label>
+							<input  id="tn10b_reducao_da_bc_icms" type="text" name="tn10b_reducao_da_bc_icms" /><br />			
+							
+							<label for="tn10b_bc_icms">* BC ICMS  <sup>1</sup>:</label>
+							<input  id="tn10b_bc_icms" type="text" name="tn10b_bc_icms" /><br />	
+							
+							<label for="tn10b_aliquota_do_icms">* Alíquota do ICMS:</label>
+							<input  id="tn10b_aliquota_do_icms" type="text" name="tn10b_aliquota_do_icms" /><br />	
+							
+							<label for="tn10b_icms">* ICMS:</label>
+							<input  id="tn10b_icms" type="text" name="tn10b_icms" /><br />		
+							
+							<label for="tn10b_bc_da_operacao_propria">% BC da operação própria:</label>
+							<input  id="tn10b_bc_da_operacao_propria" type="text" name="tn10b_da_operacao_propria" /><br />																																											
+							<p><span class="obs"><sup>1</sup>Atenção: a Base de Cálculo do produto deve ser informada contemplando todos os valores previstos na legislação pertinente, ainda que algumas de suas parcelas tenham sido informadas em campos específicos (frete, seguro, desconto, IPI, Outras Despesas Acessórias, etc).</span></p>
+							
+							
+							<h3>ICMS ST</h3>
+							
+							<label for="tn10b_modalid_de_determ_da_bc_icms_st">* Modalid. de determ. da BC ICMS ST:</label>
+								<select id="tn10b_modalid_de_determ_da_bc_icms_st" size="1"  name="tn10b_modalid_de_determ_da_bc_icms_st">				
+							    <option selected="selected" value=""></option>
+							    <option value="preco_tabelado_ou_maximo_sugerido">Preço Tabelado ou Máximo sugerido</option>
+							    <option value="lista_negativa_valor">Lista Negativa (valor)</option>
+							    <option value="lista_positiva_valor">Lista Positiva (valor)</option>
+							    <option value="lista_neutra_valor">Lista Neutra (valor)</option>
+							    <option value="margem_valor_agregado">Margem Valor Agregado (%)</option>
+							    <option value="pauta_valor">Pauta (valor)</option>
+
+							    </select>
+							<br />									
+	
+								
+								<label for="tn10b_reducao_da_bc_icms_st">% redução da BC ICMS ST:</label>
+								<input  id="tn10b_reducao_da_bc_icms_st" type="text" name="tn10b_reducao_da_bc_icms_st" /><br />
+								
+								<label for="tn10b_margem_de_valor_adic_icms_st">% margem de valor adic. ICMS ST:</label>
+								<input  id="tn10b_margem_de_valor_adic_icms_st" type="text" name="tn10b_margem_de_valor_adic_icms_st" /><br />
+								
+								<label for="tn10b_bc_icms_st">* BC ICMS ST:</label>
+								<input  id="tn10b_bc_icms_st" type="text" name="tn10b_bc_icms_st" /><br />
+								
+								<label for="tn10b_aliquota_do_icms_st">* Alíquota do ICMS ST:</label>
+								<input  id="tn10b_aliquota_do_icms_st" type="text" name="tn10b_aliquota_do_icms_st" /><br />
+								
+								<label for="tn10b_icms_st">* ICMS ST:</label>
+								<input  id="tn10b_icms_st" type="text" name="tn10b_icms_st" /><br />																															
+							<label for="tn10b_uf_do_icms_st_devido_na_operacao">* UF do ICMS ST devido na operacao:</label>
+								<select id="tn10b_uf_do_icms_st_devido_na_operacao" size="1"  name="tn10b_uf_do_icms_st_devido_na_operacao">				
+							    <option selected="selected" value=""></option>
+									<option value="AC">Acre</option>
+									<option value="AL">Alagoas</option>
+									<option value="AP">Amapá</option>
+									<option value="AM">Amazonas</option>
+									<option value="BA">Bahia</option>
+									<option value="CE">Ceará</option>
+									<option value="DF">Distrito Federal</option>
+									<option value="ES">Espirito Santo</option>
+									<option value="GO">Goiás</option>
+									<option value="MA">Maranhão</option>
+									<option value="MS">Mato Grosso do Sul</option>
+									<option value="MT">Mato Grosso</option>
+									<option value="MG">Minas Gerais</option>
+									<option value="PA">Pará</option>
+									<option value="PB">Paraíba</option>
+									<option value="PR">Paraná</option>
+									<option value="PE">Pernambuco</option>
+									<option value="PI">Piauí</option>
+									<option value="RJ">Rio de Janeiro</option>
+									<option value="RN">Rio Grande do Norte</option>
+									<option value="RS">Rio Grande do Sul</option>
+									<option value="RO">Rondônia</option>
+									<option value="RR">Roraima</option>
+									<option value="SC">Santa Catarina</option>
+									<option value="SP">São Paulo</option>
+									<option value="SE">Sergipe</option>
+									<option value="TO">Tocantins</option>
+							    </select>
+							<br />									
+							
+														
+								
+						</div><!-- 10 -->										
+								
+							
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 20 -->						
+						<div id="box_20" class="box_tn">
+							
+							<h3>ICMS</h3>
+								
+							<label for="tn20_modalid_de_determ_da_bc_icms">* Modalid. de determ. da BC ICMS:</label>
+								<select id="tn20_modalid_de_determ_da_bc_icms" size="1"  name="tn20_modalid_de_determ_da_bc_icms">				
+							    <option selected="selected" value=""></option>
+
+								<option value="margem_valor_agregado">Margem Valor Agregado</option>
+								<option value="pauta_valor">Pauta (valor)</option>
+								<option value="preco_tabelado_max_valor">Preço Tabelado Máx. (valor)</option>
+								<option value="valor_da_operacao">Valor da Operação</option>									    
+								
+							</select>
+							<br />	
+							
+							
+							<label for="tn20_reducao_da_bc_icms">% redução da BC ICMS:</label>
+							<input  id="tn20_reducao_da_bc_icms" type="text" name="tn20_reducao_da_bc_icms" /><br />			
+							
+							<label for="tn20_bc_icms">* BC ICMS  <sup>1</sup>:</label>
+							<input  id="tn20_bc_icms" type="text" name="tn20_bc_icms" /><br />	
+							
+							<label for="tn20_aliquota_do_icms">* Alíquota do ICMS:</label>
+							<input  id="tn20_aliquota_do_icms" type="text" name="tn20_aliquota_do_icms" /><br />	
+							
+							<label for="tn20_icms">* ICMS:</label>
+							<input  id="tn20_icms" type="text" name="tn20_icms" /><br />		
+							
+																																
+							<p><span class="obs"><sup>1</sup>Atenção: a Base de Cálculo do produto deve ser informada contemplando todos os valores previstos na legislação pertinente, ainda que algumas de suas parcelas tenham sido informadas em campos específicos (frete, seguro, desconto, IPI, Outras Despesas Acessórias, etc).</span></p>						
+								
+						</div><!-- 20 -->			
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 30 -->						
+						<div id="box_30" class="box_tn">
+								
+							
+							<h3>ICMS ST</h3>
+							
+							<label for="tn30_modalid_de_determ_da_bc_icms_st">* Modalid. de determ. da BC ICMS ST:</label>
+								<select id="tn30_modalid_de_determ_da_bc_icms_st" size="1"  name="tn30_modalid_de_determ_da_bc_icms_st">				
+							    <option selected="selected" value=""></option>
+							    <option value="preco_tabelado_ou_maximo_sugerido">Preço Tabelado ou Máximo sugerido</option>
+							    <option value="lista_negativa_valor">Lista Negativa (valor)</option>
+							    <option value="lista_positiva_valor">Lista Positiva (valor)</option>
+							    <option value="lista_neutra_valor">Lista Neutra (valor)</option>
+							    <option value="margem_valor_agregado">Margem Valor Agregado (%)</option>
+							    <option value="pauta_valor">Pauta (valor)</option>
+
+							    </select>
+							<br />	
+							
+								<label for="tn30_reducao_da_bc_icms_st">% redução da BC ICMS ST:</label>
+								<input  id="tn30_reducao_da_bc_icms_st" type="text" name="tn30_reducao_da_bc_icms_st" /><br />
+								
+								<label for="tn30_margem_de_valor_adic_icms_st">% margem de valor adic. ICMS ST:</label>
+								<input  id="tn30_margem_de_valor_adic_icms_st" type="text" name="tn30_margem_de_valor_adic_icms_st" /><br />
+								
+								<label for="tn30_bc_icms_st">* BC ICMS ST:</label>
+								<input  id="tn30_bc_icms_st" type="text" name="tn30_bc_icms_st" /><br />
+								
+								<label for="tn30_aliquota_do_icms_st">* Alíquota do ICMS ST:</label>
+								<input  id="tn30_aliquota_do_icms_st" type="text" name="tn30_aliquota_do_icms_st" /><br />
+								
+								<label for="tn30_icms_st">* ICMS ST:</label>
+								<input  id="tn30_icms_st" type="text" name="tn30_icms_st" /><br />															
+							
+														
+						</div><!-- 30 -->			
+						
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 40 -->						
+						<div id="box_40" class="box_tn">
+							
+							<label for="tn40_icms">ICMS:</label>
+							<input  id="tn40_icms" type="text" name="tn40_icms" /><br />					
+												
+							<label for="tn40_motivo_da_desoneracao_do_icms">Motivo da Desoneração do ICMS:</label>
+								<select id="tn40_motivo_da_desoneracao_do_icms" size="1"  name="tn40_motivo_da_desoneracao_do_icms">				
+							    <option selected="selected" value=""></option>
+							    <option value="taxi">Táxi</option>
+							    <option value="deficiente_fisico">Deficiente Físico</option>
+							    <option value="produto_agropecuario">Produtor Agropecuário</option>
+							    
+							    <option value="frotista_locadora">Frotista/Locadora</option>
+							    <option value="diplomatico_consular">Diplomático/Consular</option>
+							    <option value="utilit_e_motoc_da_amazonia_ocid_e_areas_de_livre_comercio">Utilit. e Motoc. da Amazônia Ocid. e Áreas de Livre Comércio</option>
+							    <option value="suframa">SUFRAMA</option>
+							    <option value="venda_a_orgao_publicos">Venda a Órgãos Públicos</option>
+
+
+							    </select>
+							<br />															
+								
+						</div><!-- 40 -->																										
+						
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 41a -->						
+						<div id="box_41a" class="box_tn">
+							
+							<label for="tn41a_icms">ICMS:</label>
+							<input  id="tn41a_icms" type="text" name="tn41a_icms" /><br />	
+																
+							<label for="tn41a_motivo_da_desoneracao_do_icms">Motivo da Desoneração do ICMS:</label>
+								<select id="tn41a_motivo_da_desoneracao_do_icms" size="1"  name="tn41a_motivo_da_desoneracao_do_icms">				
+							    <option selected="selected" value=""></option>
+							    <option value="taxi">Táxi</option>
+							    <option value="deficiente_fisico">Deficiente Físico</option>
+							    <option value="produto_agropecuario">Produtor Agropecuário</option>
+							    
+							    <option value="frotista_locadora">Frotista/Locadora</option>
+							    <option value="diplomatico_consular">Diplomático/Consular</option>
+							    <option value="utilit_e_motoc_da_amazonia_ocid_e_areas_de_livre_comercio">Utilit. e Motoc. da Amazônia Ocid. e Áreas de Livre Comércio</option>
+							    <option value="suframa">SUFRAMA</option>
+							    <option value="venda_a_orgao_publicos">Venda a Órgãos Públicos</option>
+
+
+							    </select>
+							<br />								
+								
+						</div><!-- 41a -->	
+						
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 41b -->						
+						<div id="box_41b" class="box_tn">
+						
+													
+							<label for="tn41b_bc_icms_st_retido_na_uf_remetente">* BC ICMS ST retido na UF remetente:</label>
+							<input  id="bc_icms_st_retido_na_uf_remetente" type="text" name="tn41b_bc_icms_st_retido_na_uf_remetente" /><br />			
+							
+							<label for="tn41b_icms_st_retido_na_uf_remetente">* ICMS ST retido na UF remetente:</label>
+							<input  id="tn41b_icms_st_retido_na_uf_remetente" type="text" name="tn41b_icms_st_retido_na_uf_remetente" /><br />			
+							
+							<label for="tn41b_bc_icms_st_da_uf_destino">* BC ICMS ST da UF destino:</label>
+							<input  id="tn41b_bc_icms_st_da_uf_destino" type="text" name="tn41b_bc_icms_st_da_uf_destino" /><br />			
+							
+							<label for="tn41b_icms_st_da_uf_destino">* ICMS ST da UF destino:</label>
+							<input  id="tn41b_icms_st_da_uf_destino" type="text" name="tn41b_icms_st_da_uf_destino" /><br />																																
+															
+								
+						</div><!-- 41b -->	
+						
+												
+					</div><!-- mod_tributacao_normal end -->
 					
+					
+					
+					
+					
+					
+					<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+					<!-- simples nacional -->
 					<div id="mod_simples_nacional" class="box">
-						<p>simples nacional</p>
-					</div>
+						<h3>Simples Nacional</h3>
+						
+						<label for="simples_nacional_situacao_tributaria">* Situação Tributária:</label>
+							<select id="simples_nacional_situacao_tributaria" size="1"  name="simples_nacional_situacao_tributaria">
+				
+						    <option selected="selected" value=""></option>
+						    <option value="101">101 - Tributada com permissão de crédito</option>
+						    <option value="102">102 - Tributada sem permissão de Crédito</option>
+						    <option value="103">103 - Isenção do ICMS para faixa de receita bruta</option>
+							<option value="201">201 - Tributada com permissão de crédito e com cobrança do ICMS por ST</option>
+							<option value="202">202 - Tributada sem permissão de crédito e com cobrança do ICMS por ST</option>
+							<option value="203">203 - Isenção do ICMS para faixa de receita bruta e com cobrança do ICMS por ST</option>
+							<option value="300">300 - Imune</option>
+							<option value="400">400 - Não Tributada</option>
+							<option value="500">500 - ICMS cobrando anteriormente por ST ou por antecipação</option>
+							<option value="900">900 - Outros</option>
+						      </select>
+						<br />				
+						
+						<label for="sn_origem">* Origem:</label>
+							<select id="sn_origem" size="1"  name="sn_origem">				
+						    <option selected="selected" value=""></option>
+						    <option value="nacional">Nacional</option>
+						    <option value="estrangeira_importacao_direta">Estrangeira - Importação Direta</option>
+						    <option value="estrangeira_adquirida_no_mercado_interno">Estrangeira - Adquirida no Mercado Interno</option>
+						    </select>
+						<br />				
+						
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 101 -->						
+						<div id="box_101" class="box_sn">
+							
+							<label for="sn101_aliquota_aplicavel_de_calculo_de_credito">* Alíquota aplicável de cálculo de crédito:</label>
+							<input  id="sn101_aliquota_aplicavel_de_calculo_de_credito" type="text" name="sn101_aliquota_aplicavel_de_calculo_de_credito" /><br />
+														
+							<label for="sn101_credito_do_icms_que_pode_ser_aproveitado">* Crédito do ICMs que pode ser aproveitado:</label>
+							<input  id="sn101_credito_do_icms_que_pode_ser_aproveitado" type="text" name="sn101_credito_do_icms_que_pode_ser_aproveitado" /><br />										
+						</div><!-- 101 -->			
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 102 -->						
+						<div id="box_102" class="box_sn">
+						</div><!-- 102 -->			
+						
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 103 -->						
+						<div id="box_103" class="box_sn">
+						</div><!-- 103 -->	
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 201 -->						
+						<div id="box_201" class="box_sn">
+							
+							<label for="sn201_aliquota_aplicavel_de_calculo_de_credito">* Alíquota aplicável de cálculo de crédito:</label>
+							<input  id="aliquota_aplicavel_de_calculo_de_credito" type="text" name="sn201_aliquota_aplicavel_de_calculo_de_credito" /><br />
+														
+							<label for="sn201_credito_do_icms_que_pode_ser_aproveitado">* Crédito do ICMs que pode ser aproveitado:</label>
+							<input  id="sn201_credito_do_icms_que_pode_ser_aproveitado" type="text" name="sn201_credito_do_icms_que_pode_ser_aproveitado" /><br />		
+							
+							<h3>ICMS ST</h3>
+							
+							<label for="sn201_modalid_de_determ_da_bc_icms_st">* Modalid. de determ. da BC ICMS ST:</label>
+								<select id="sn201_modalid_de_determ_da_bc_icms_st" size="1"  name="sn201_modalid_de_determ_da_bc_icms_st">				
+							    <option selected="selected" value=""></option>
+							    <option value="preco_tabelado_ou_maximo_sugerido">Preço Tabelado ou Máximo sugerido</option>
+							    <option value="lista_negativa_valor">Lista Negativa (valor)</option>
+							    <option value="lista_positiva_valor">Lista Positiva (valor)</option>
+							    <option value="lista_neutra_valor">Lista Neutra (valor)</option>
+							    <option value="margem_valor_agregado">Margem Valor Agregado (%)</option>
+							    <option value="pauta_valor">Pauta (valor)</option>
+
+							    </select>
+							<br />									
+	
+								
+								<label for="sn201_reducao_da_bc_icms_st">% redução da BC ICMS ST:</label>
+								<input  id="sn201_reducao_da_bc_icms_st" type="text" name="sn201_reducao_da_bc_icms_st" /><br />
+								
+								<label for="sn201_margem_de_valor_adic_icms_st">% margem de valor adic. ICMS ST:</label>
+								<input  id="sn201_margem_de_valor_adic_icms_st" type="text" name="sn201_margem_de_valor_adic_icms_st" /><br />
+								
+								<label for="sn201_bc_icms_st">* BC ICMS ST:</label>
+								<input  id="sn201_bc_icms_st" type="text" name="sn201_bc_icms_st" /><br />
+								
+								<label for="sn201_aliquota_do_icms_st">* Alíquota do ICMS ST:</label>
+								<input  id="sn201_aliquota_do_icms_st" type="text" name="sn201_aliquota_do_icms_st" /><br />
+								
+								<label for="sn201_icms_st">* ICMS ST:</label>
+								<input  id="sn201_icms_st" type="text" name="sn201_icms_st" /><br />	
+																																								<span class="warning">Atenção: o valor do ICMS ST deve ser informado já com o abatimento do ICMS próprio</span>							
+														
+						</div><!-- 201 -->
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 202 -->						
+						<div id="box_202" class="box_sn">
+							
+							<h3>ICMS ST</h3>
+							
+							<label for="sn202_modalid_de_determ_da_bc_icms_st">* Modalid. de determ. da BC ICMS ST:</label>
+								<select id="sn202_modalid_de_determ_da_bc_icms_st" size="1"  name="sn202_modalid_de_determ_da_bc_icms_st">				
+							    <option selected="selected" value=""></option>
+							    <option value="preco_tabelado_ou_maximo_sugerido">Preço Tabelado ou Máximo sugerido</option>
+							    <option value="lista_negativa_valor">Lista Negativa (valor)</option>
+							    <option value="lista_positiva_valor">Lista Positiva (valor)</option>
+							    <option value="lista_neutra_valor">Lista Neutra (valor)</option>
+							    <option value="margem_valor_agregado">Margem Valor Agregado (%)</option>
+							    <option value="pauta_valor">Pauta (valor)</option>
+
+							    </select>
+							<br />	
+														
+								<label for="sn202_reducao_da_bc_icms_st">% redução da BC ICMS ST:</label>
+								<input  id="sn202_reducao_da_bc_icms_st" type="text" name="sn202_reducao_da_bc_icms_st" /><br />
+								
+								<label for="sn202_margem_de_valor_adic_icms_st">% margem de valor adic. ICMS ST:</label>
+								<input  id="sn202_margem_de_valor_adic_icms_st" type="text" name="sn202_margem_de_valor_adic_icms_st" /><br />
+								
+								<label for="sn202_bc_icms_st">* BC ICMS ST:</label>
+								<input  id="sn202_bc_icms_st" type="text" name="sn202_bc_icms_st" /><br />
+								
+								<label for="sn202_aliquota_do_icms_st">* Alíquota do ICMS ST:</label>
+								<input  id="sn202_aliquota_do_icms_st" type="text" name="sn202_aliquota_do_icms_st" /><br />
+								
+								<label for="sn202_icms_st">* ICMS ST:</label>
+								<input  id="sn202_icms_st" type="text" name="sn202_icms_st" /><br />		
+												
+								<p><span class="warning">Atenção: o valor do ICMS ST deve ser informado já com o abatimento do ICMS próprio</span></p>
+							
+						</div><!-- 202 -->																							
+						
+						
+						<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+						<!-- 203 -->						
+						<div id="box_203" class="box_sn">
+							
+							<h3>ICMS ST</h3>
+							
+							<label for="sn203_modalid_de_determ_da_bc_icms_st">* Modalid. de determ. da BC ICMS ST:</label>
+								<select id="sn203_modalid_de_determ_da_bc_icms_st" size="1"  name="sn203_modalid_de_determ_da_bc_icms_st">				
+							    <option selected="selected" value=""></option>
+							    <option value="preco_tabelado_ou_maximo_sugerido">Preço Tabelado ou Máximo sugerido</option>
+							    <option value="lista_negativa_valor">Lista Negativa (valor)</option>
+							    <option value="lista_positiva_valor">Lista Positiva (valor)</option>
+							    <option value="lista_neutra_valor">Lista Neutra (valor)</option>
+							    <option value="margem_valor_agregado">Margem Valor Agregado (%)</option>
+							    <option value="pauta_valor">Pauta (valor)</option>
+
+							    </select>
+							<br />	
+														
+								<label for="sn203_reducao_da_bc_icms_st">% redução da BC ICMS ST:</label>
+								<input  id="sn203_reducao_da_bc_icms_st" type="text" name="sn203_reducao_da_bc_icms_st" /><br />
+								
+								<label for="sn203_margem_de_valor_adic_icms_st">% margem de valor adic. ICMS ST:</label>
+								<input  id="sn203_margem_de_valor_adic_icms_st" type="text" name="sn203_margem_de_valor_adic_icms_st" /><br />
+								
+								<label for="sn203_bc_icms_st">* BC ICMS ST:</label>
+								<input  id="sn203_bc_icms_st" type="text" name="sn203_bc_icms_st" /><br />
+								
+								<label for="sn203_aliquota_do_icms_st">* Alíquota do ICMS ST:</label>
+								<input  id="sn203_aliquota_do_icms_st" type="text" name="sn203_aliquota_do_icms_st" /><br />
+								
+								<label for="sn203_icms_st">* ICMS ST:</label>
+								<input  id="sn203_icms_st" type="text" name="sn203_icms_st" /><br />						
+							
+						</div><!-- 203 -->			
+						
+						
+					</div><!-- simples nacional end -->
+					
+					
+					
+					
+					
 					
 					
 				</div><!-- sub-tabs-1 end -->			
+
+				<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+				<!-- IPI -->
 				
 				<div id="sub-tabs-2">
-					yyy
+					
+					<label for="ipi_situacao_tributaria">Situação Tributária:</label>					
+					
+								<select id="ipi_situacao_tributaria" size="1"  name="ipi_situacao_tributaria">				
+							    <option selected="selected" value=""></option>
+							    <option value="ipi00">IPI 00 - Entrada com recuperação de crédito</option>
+							    <option value="ipi01">IPI 01 - Entrada tributada com alíquota zero</option>
+							    <option value="ipi02">IPI 02 - Entrada isenta</option>
+							    <option value="ipi03">IPI 03 - Entrada não-tributada</option>
+							    <option value="ipi04">IPI 04 - Entrada imune</option>
+							    <option value="ipi05">IPI 05 - Entrada com suspensão</option>
+							    <option value="ipi49">IPI 49 - Outras entradas</option>
+							    </select>
+							<br />			
+							
+												
+					<label for="ipi_classe_de_enquadramento">Classe de enquadramento <sup>1</sup>:</label>
+					<input  id="ipi_classe_de_enquadramento" type="text" name="ipi_classe_de_enquadramento" /><br />			
+					
+					<label for="ipi_codigo_de_enquadramento">Código de enquadramento:</label>
+					<input  id="ipi_codigo_de_enquadramento" type="text" name="ipi_codigo_de_enquadramento" /><br />
+
+					<label for="ipi_cnpj_do_produtor">CNPJ do produtor:</label>
+					<input  id="ipi_cnpj_do_produtor" type="text" name="ipi_cnpj_do_produtor" /><br />			
+											
+					<label for="ipi_codigo_do_selo_de_controle">Código do selo de controle <sup>2</sup>:</label>
+					<input  id="ipi_codigo_do_selo_de_controle" type="text" name="ipi_codigo_do_selo_de_controle" /><br />	
+					
+					<label for="ipi_qtd_do_selo_de_controle">Qtd. do selo de controle:</label>
+					<input  id="ipi_qtd_do_selo_de_controle" type="text" name="ipi_qtd_do_selo_de_controle" /><br />	
+					
+
+					<label for="ipi_tipo_de_calculo">Tipo de cálculo:</label>					
+								<select id="ipi_tipo_de_calculo" size="1"  name="ipi_tipo_de_calculo">									    
+									<option selected="selected" value=""></option>
+							    <option value="percentual">Percentual</option>
+							    <option value="emvalor">Em Valor</option>
+							    </select>
+							<br />	
+
+																						
+					<label for="ipi_valor_da_base_de_calculo">Valor da base de cálculo:</label>
+					<input  id="ipi_valor_da_base_de_calculo" type="text" name="ipi_valor_da_base_de_calculo" /><br />				
+																											
+					<label for="ipi_aliquota">Alíquota:</label>
+					<input  id="ipi_aliquota" type="text" name="ipi_aliquota" /><br />									
+																						
+					<label for="ipi_qtd_total_unidade_padrao">Qtd. total unidade padrão:</label>
+					<input  id="ipi_qtd_total_unidade_padrao" type="text" name="ipi_qtd_total_unidade_padrao" /><br />				
+					
+																						
+					<label for="ipi_valor_por_unidade">Valor por unidade:</label>
+					<input  id="ipi_valor_por_unidade" type="text" name="ipi_valor_por_unidade" /><br />				
+					
+																						
+					<label for="ipi_valor_do_ipi">Valor do IPI:</label>
+					<input  id="ipi_valor_do_ipi" type="text" name="ipi_valor_do_ipi" /><br />				
+																				
+					
+					<p><span class="obs"><sup>1</sup> A informação da Classe de enquadramento do IPI para Cigarros e Bebidas, quando aplicável, deve ser informada utilizando a codificação prevista nos Atos Normativos editados pela Receita Federeal</span></p>
+					
+					<p><span class="obs"><sup>2</sup> A informação do código de selo, quando aplicável, deve ser informada utilizando a codificação prevista nos Atos Normativos editados pela Receita Federal</span></p>
 				</div><!-- sub-tabs-2 end -->						
 
+				<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+				<!-- PIS -->
+
 				<div id="sub-tabs-3">
-					xxx
+					
+					<h3>PIS</h3>					
+
+					<label for="pis_situacao_tributaria">* Situação tributária:</label>					
+								<select id="pis_situacao_tributaria" size="1"  name="pis_situacao_tributaria">									    
+									<option selected="selected" value=""></option>
+									<option value="01">01 - Operaçao Tributável (Base de cálculo = valor da operação aliquota normal (cumulativo/não cumulativo)</option>
+									<option value="02">02 - Operaçao Tributável (Base de cálculo = valor da operação (aliquota diferenciada))</option>
+									<option value="03">03 - Operaçao Tributável (Base de cálculo = base de cálculo = quantidade vendida x alíquota por unidade de produto)</option>
+									<option value="04">04 - Operaçao Tributável (tributação monofásica (aliquota zero)</option>
+									<option value="06">06 - Operaçao Tributável (alíquota zero)</option>
+									<option value="07">07 - Operação Isenta da Contribuição</option>
+									<option value="08">08 - Operação Sem Incidência da Contribuição</option>
+									<option value="09">09 - Operação com Suspensão da Contribuição</option>
+									<option value="49">49 - Outras Operações de Saída</option>
+									<option value="50">50 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno</option>
+									<option value="51">51 - Operação com Direito a Crédito – Vinculada Exclusivamente a Receita Não Tributada no Mercado Interno</option>
+									<option value="52">52 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação</option>
+									<option value="53">53 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno</option>
+									<option value="54">54 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação</option>
+									<option value="55">55 - Operação com Direito a Crédito - Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação</option>
+									<option value="56">56 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação</option>
+									<option value="60">60 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno</option>
+									<option value="61">61 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno</option>
+									<option value="62">62 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação</option>
+									<option value="63">63 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno</option>
+									<option value="64">64 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação</option>
+									<option value="65">65 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação</option>
+									<option value="66">66 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação</option>
+									<option value="67">67 - Crédito Presumido - Outras Operações</option>
+									<option value="70">70 - Operação de Aquisição sem Direito a Crédito</option>
+									<option value="71">71 - Operação de Aquisição com Isenção</option>
+									<option value="72">72 - Operação de Aquisição com Suspensão</option>
+									<option value="73">73 - Operação de Aquisição a Alíquota Zero</option>
+									<option value="74">74 - Operação de Aquisição sem Incidência da Contribuição</option>
+									<option value="75">75 - Operação de Aquisição por Substituição Tributária</option>
+									<option value="98">98 - Outras Operações de Entrada</option>
+									<option value="99">99 - Outras Operações</option>
+							    </select>
+							<br />	
+							
+
+					<label for="pis_tipo_de_calculo">Tipo de cálculo:</label>					
+								<select id="pis_tipo_de_calculo" size="1"  name="pis_tipo_de_calculo">									    
+								<option selected="selected" value=""></option>
+							    <option value="percentual">Percentual</option>
+							    <option value="emvalor">Em Valor</option>
+							    </select>
+							<br />								
+							
+							
+					<label for="pis_valor_da_base_de_calculo">Valor da base de cálculo:</label>
+					<input  id="pis_valor_da_base_de_calculo" type="text" name="pis_valor_da_base_de_calculo" /><br />				
+																											
+					<label for="pis_aliquota_percentual">Alíquota (percentual):</label>
+					<input  id="pis_aliquota_percentual" type="text" name="pis_aliquota_percentual" /><br />	
+					
+					<label for="pis_aliquota_em_reais">Alíquota (em reais):</label>
+					<input  id="pis_aliquota_em_reais" type="text" name="pis_aliquota_em_reais" /><br />													
+																						
+					<label for="pis_quantidade_vendida">Quantidade vendida:</label>
+					<input  id="pis_quantidade_vendida" type="text" name="pis_quantidade_vendida" /><br />				
+					
+					<label for="pis_valor_do_pis">Valor do PIS:</label>
+					<input  id="pis_valor_do_pis" type="text" name="pis_valor_do_pis" /><br />				
+															
+
+
+					
+					
+					<h3>PIS ST</h3>					
+
+					<label for="pis_st_tipo_de_calculo">Tipo de cálculo:</label>					
+								<select id="pis_st_tipo_de_calculo" size="1"  name="pis_st_tipo_de_calculo">									    
+								<option selected="selected" value=""></option>
+							    <option value="percentual">Percentual</option>
+							    <option value="emvalor">Em Valor</option>
+							    </select>
+							<br />								
+							
+							
+					<label for="pis_st_valor_da_base_de_calculo">Valor da base de cálculo:</label>
+					<input  id="pis_st_valor_da_base_de_calculo" type="text" name="pis_st_valor_da_base_de_calculo" /><br />				
+																											
+					<label for="pis_st_aliquota_percentual">Alíquota (percentual):</label>
+					<input  id="pis_st_aliquota_percentual" type="text" name="pis_st_aliquota_percentual" /><br />	
+					
+					<label for="pis_st_aliquota_em_reais">Alíquota (em reais):</label>
+					<input  id="pis_st_aliquota_em_reais" type="text" name="pis_st_aliquota_em_reais" /><br />													
+																						
+					<label for="pis_st_quantidade_vendida">Quantidade vendida:</label>
+					<input  id="pis_st_quantidade_vendida" type="text" name="pis_st_quantidade_vendida" /><br />				
+					
+					<label for="pis_st_valor_do_pis_st">Valor do PIS ST:</label>
+					<input  id="pis_st_valor_do_pis_st" type="text" name="pis_st_valor_do_pis_st" /><br />				
+								
+					
 				</div><!-- sub-tabs-3 end -->	
+
+				<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+				<!-- CONFINS -->
 				
 				<div id="sub-tabs-4">
-					xxx
+					
+					
+					<h3>CONFINS</h3>						
+					
+					<label for="confins_tipo_de_calculo">Tipo de cálculo:</label>	
+								<select id="confins_tipo_de_calculo" size="1"  name="confins_tipo_de_calculo">	
+								<option selected="selected" value=""></option>
+							    <option value="percentual">Percentual</option>
+							    <option value="emvalor">Em Valor</option>
+							    </select>
+							<br />								
+							
+							
+					<label for="confins_valor_da_base_de_calculo">Valor da base de cálculo:</label>
+					<input  id="confins_valor_da_base_de_calculo" type="text" name="confins_valor_da_base_de_calculo" /><br />				
+																											
+					<label for="confins_aliquota_percentual">Alíquota (percentual):</label>
+					<input  id="confins_aliquota_percentual" type="text" name="confins_aliquota_percentual" /><br />	
+					
+					<label for="confins_aliquota_em_reais">Alíquota (em reais):</label>
+					<input  id="confins_aliquota_em_reais" type="text" name="confins_aliquota_em_reais" /><br />													
+																						
+					<label for="confins_quantidade_vendida">Quantidade vendida:</label>
+					<input  id="confins_quantidade_vendida" type="text" name="confins_quantidade_vendida" /><br />				
+					
+					<label for="confins_valor_do_confins">Valor do CONFINS:</label>
+					<input  id="confins_valor_do_confins" type="text" name="confins_valor_do_confins" /><br />				
+															
+
+
+					
+					
+					<h3>CONFINS ST</h3>				
+
+					<label for="confins_st_tipo_de_calculo">Tipo de cálculo:</label>					
+								<select id="confins_st_tipo_de_calculo" size="1"  name="confins_st_tipo_de_calculo">										<option selected="selected" value=""></option>
+							    <option value="percentual">Percentual</option>
+							    <option value="emvalor">Em Valor</option>
+							    </select>
+							<br />								
+							
+							
+					<label for="confins_st_valor_da_base_de_calculo">Valor da base de cálculo:</label>
+					<input  id="confins_st_valor_da_base_de_calculo" type="text" name="confins_st_valor_da_base_de_calculo" /><br />				
+																											
+					<label for="confins_st_aliquota_percentual">Alíquota (percentual):</label>
+					<input  id="confins_st_aliquota_percentual" type="text" name="confins_st_aliquota_percentual" /><br />	
+					
+					<label for="confins_st_aliquota_em_reais">Alíquota (em reais):</label>
+					<input  id="confins_st_aliquota_em_reais" type="text" name="confins_st_aliquota_em_reais" /><br />													
+																						
+					<label for="confins_st_quantidade_vendida">Quantidade vendida:</label>
+					<input  id="confins_st_quantidade_vendida" type="text" name="confins_st_quantidade_vendida" /><br />				
+					
+					<label for="confins_st_valor_do_confins_st">Valor do CONFINS ST:</label>
+					<input  id="confins_st_valor_do_confins_st" type="text" name="confins_st_valor_do_confins_st" /><br />
+
 				</div><!-- sub-tabs-4 end -->	
+
+				<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+				<!-- IMPOSTO DE IMPORTAÇÃO -->
 				
 				<div id="sub-tabs-5">
-					xxx
+					
+					<label for="imposto_de_importacao_valor_da_base_de_calculo">Valor da base de cálculo:</label>
+					<input  id="imposto_de_importacao_valor_da_base_de_calculo" type="text" name="imposto_de_importacao_valor_da_base_de_calculo" /><br />				
+					
+					<label for="imposto_de_importacao_valor_despesas_aduaneiras">Valor despesas aduaneiras:</label>
+					<input id="imposto_de_importacao_valor_despesas_aduaneiras" type="text" name="imposto_de_importacao_valor_despesas_aduaneiras" /><br />	
+					
+					<label for="imposto_de_importacao_valor_do_iof">Valor do IOF:</label>
+					<input id="imposto_de_importacao_valor_do_iof" type="text" name="imposto_de_importacao_valor_do_iof" /><br />				
+												
+					<label for="imposto_de_importacao_valor_imposto_de_importacao">Valor imposto de importação:</label>
+					<input id="imposto_de_importacao_valor_imposto_de_importacao" type="text" name="imposto_de_importacao_valor_imposto_de_importacao" /><br />																
+										
 				</div><!-- sub-tabs-5 end -->	
+
+				<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->		
+				<!-- ISSQN -->
 				
 				<div id="sub-tabs-6">
-					xxx
+					
+					<label for="issqn_tributacao">* Tributação:</label>					
+								<select id="issqn_tributacao" size="1"  name="issqn_tributacao">
+								<option selected="selected" value=""></option>
+							    <option value="normal">Normal</option>
+							    <option value="retida">Retida</option>
+							    <option value="substituta">Substituta</option>
+							    <option value="isenta">Isenta</option>
+							    </select>
+							<br />		
+							
+					<label for="issqn_valor_da_base_de_calculo">* Valor da base de cálculo:</label>
+					<input id="issqn_valor_da_base_de_calculo" type="text" name="issqn_valor_da_base_de_calculo" /><br />						
+					
+					<label for="issqn_aliquota">* Alíquota:</label>
+					<input id="issqn_aliquota" type="text" name="issqn_aliquota" /><br />			
+																						
+					<label for="issqn_lista_de_servico">* Lista de serviço:</label>					
+								<select id="issqn_lista_de_servico" size="1"  name="issqn_lista_de_servico">								
+									<option selected="selected" value=""></option>
+									<option value="101">101 - Análise e desenvolvimento de sistemas.</option>
+									<option value="102">102 - Programação.</option>
+									<option value="103">103 - Processamento de dados e congêneres.</option>
+									<option value="104">104 - Elaboração de programas de computadores, inclusive de jogos eletrônicos.</option>
+									<option value="105">105 - Licenciamento ou cessão de direito de uso de programas de computação.</option>
+									<option value="106">106 - Assessoria e consultoria em informática.</option>
+									<option value="107">107 - Suporte técnico em informática, inclusive instalação, configuração e manutenção de programas de computação e bancos de dados.</option>
+									<option value="108">108 - Planejamento, confecção, manutenção e atualização de páginas eletrônicas.</option>
+									<option value="201">201 - Serviços de pesquisas e desenvolvimento de qualquer natureza.</option>
+									<option value="302">302 - Cessão de direito de uso de marcas e de sinais de propaganda.</option>
+									<option value="303">303 - Exploração de salões de festas, centro de convenções, escritórios virtuais, stands, quadras esportivas, estádios, ginásios, auditórios, casas de espetáculos, parques de diversões, canchas e congêneres, para realização de eventos ou negócios de qualquer natureza.</option>
+									<option value="304">304 - Locação, sublocação, arrendamento, direito de passagem ou permissão de uso, compartilhado ou não, de ferrovia, rodovia, postes, cabos, dutos e condutos de qualquer natureza.</option>
+									<option value="305">305 - Cessão de andaimes, palcos, coberturas e outras estruturas de uso temporário.</option>
+									<option value="401">401 - Medicina e biomedicina.</option>
+									<option value="402">402 - Análises clínicas, patologia, eletricidade médica, radioterapia, quimioterapia, ultra-sonografia, ressonância magnética, radiologia, tomografia e congêneres.</option>
+									<option value="403">403 - Hospitais, clínicas, laboratórios, sanatórios, manicômios, casas de saúde, prontos-socorros, ambulatórios e        congêneres.</option>
+									<option value="404">404 - Instrumentação cirúrgica.</option>
+									<option value="405">405 - Acupuntura.</option>
+									<option value="406">406 - Enfermagem, inclusive serviços auxiliares.</option>
+									<option value="407">407 - Serviços farmacêuticos.</option>
+									<option value="408">408 - Terapia ocupacional, fisioterapia e fonoaudiologia.</option>
+									<option value="409">409 - Terapias de qualquer espécie destinadas ao tratamento físico, orgânico e mental.</option>
+									<option value="410">410 - Nutrição.</option>
+									<option value="411">411 - Obstetrícia.</option>
+									<option value="412">412 - Odontologia.</option>
+									<option value="413">413 - Ortóptica.</option>
+									<option value="414">414 - Próteses sob encomenda.</option>
+									<option value="415">415 - Psicanálise.</option>
+									<option value="416">416 - Psicologia.</option>
+									<option value="417">417 - Casas de repouso e de recuperação, creches, asilos e congêneres.</option>
+									<option value="418">418 - Inseminação artificial, fertilização in vitro e congêneres.</option>
+									<option value="419">419 - Bancos de sangue, leite, pele, olhos, óvulos, sêmen e congêneres.</option>
+									<option value="420">420 - Coleta de sangue, leite, tecidos, sêmen, órgãos e materiais biológicos de qualquer espécie.</option>
+									<option value="421">421 - Unidade de atendimento, assistência ou tratamento móvel e congêneres.</option>
+									<option value="422">422 - Planos de medicina de grupo ou individual e convênios para prestação de assistência médica, hospitalar, odontológica e congêneres.</option>
+									<option value="423">423 - Outros planos de saúde que se cumpram através de serviços de terceiros contratados, credenciados, cooperados ou apenas pagos pelo operador do plano mediante indicação do beneficiário.</option>
+									<option value="501">501 - Medicina veterinária e zootecnia.</option>
+									<option value="502">502 - Hospitais, clínicas, ambulatórios, prontos-socorros e congêneres, na área veterinária.</option>
+									<option value="503">503 - Laboratórios de análise na área veterinária.</option>
+									<option value="504">504 - Inseminação artificial, fertilização in vitro e congêneres.</option>
+									<option value="505">505 - Bancos de sangue e de órgãos e congêneres.</option>
+									<option value="506">506 - Coleta de sangue, leite, tecidos, sêmen, órgãos e materiais biológicos de qualquer espécie.</option>
+									<option value="507">507 - Unidade de atendimento, assistência ou tratamento móvel e congêneres.</option>
+									<option value="508">508 - Guarda, tratamento, amestramento, embelezamento, alojamento e congêneres.</option>
+									<option value="509">509 - Planos de atendimento e assistência médico-veterinária.</option>
+									<option value="601">601 - Barbearia, cabeleireiros, manicuros, pedicuros e congêneres.</option>
+									<option value="602">602 - Esteticistas, tratamento de pele, depilação e congêneres.</option>
+									<option value="603">603 - Banhos, duchas, sauna, massagens e congêneres.</option>
+									<option value="604">604 - Ginástica, dança, esportes, natação, artes marciais e demais atividades físicas.</option>
+									<option value="605">605 - Centros de emagrecimento, spa e congêneres.</option>
+									<option value="701">701 - Engenharia, agronomia, agrimensura, arquitetura, geologia, urbanismo, paisagismo e congêneres.</option>
+									<option value="702">702 - Execução, por administração, empreitada ou subempreitada, de obras de construção civil, hidráulica ou elétrica e de outras obras semelhantes, inclusive sondagem, perfuração de poços, escavação, drenagem e irrigação, terraplanagem, pavimentação, concretagem e a instalação e montagem de produtos, peças e equipamentos (exceto o fornecimento de mercadorias produzidas pelo prestador de serviços fora do local da prestação dos serviços, que fica sujeito ao ICMS).</option>
+									<option value="703">703 - Elaboração de planos diretores, estudos de viabilidade, estudos organizacionais e outros, relacionados com obras e serviços de engenharia; elaboração de anteprojetos, projetos básicos e projetos executivos para trabalhos de engenharia.</option>
+									<option value="704">704 - Demolição.</option>
+									<option value="705">705 - Reparação, conservação e reforma de edifícios, estradas, pontes, portos e congêneres (exceto o fornecimento de mercadorias produzidas pelo prestador dos serviços, fora do local da prestação dos serviços, que fica sujeito ao ICMS).</option>
+									<option value="706">706 - Colocação e instalação de tapetes, carpetes, assoalhos, cortinas, revestimentos de parede, vidros, divisórias, placas de gesso e congêneres, com material fornecido pelo tomador do serviço.</option>
+									<option value="707">707 - Recuperação, raspagem, polimento e lustração de pisos e congêneres.</option>
+									<option value="708">708 - Calafetação.</option>
+									<option value="709">709 - Varrição, coleta, remoção, incineração, tratamento, reciclagem, separação e destinação final de lixo, rejeitos e outros resíduos quaisquer.</option>
+									<option value="710">710 - Limpeza, manutenção e conservação de vias e logradouros públicos, imóveis, chaminés, piscinas, parques, jardins e congêneres.</option>
+									<option value="711">711 - Decoração e jardinagem, inclusive corte e poda de árvores.</option>
+									<option value="712">712 - Controle e tratamento de efluentes de qualquer natureza e de agentes físicos, químicos e biológicos.</option>
+									<option value="713">713 - Dedetização, desinfecção, desinsetização, imunização, higienização, desratização, pulverização e congêneres.</option>
+									<option value="716">716 - Florestamento, reflorestamento, semeadura, adubação e congêneres.</option>
+									<option value="717">717 - Escoramento, contenção de encostas e serviços congêneres.</option>
+									<option value="718">718 - Limpeza e dragagem de rios, portos, canais, baías, lagos, lagoas, represas, açudes e congêneres.</option>
+									<option value="719">719 - Acompanhamento e fiscalização da execução de obras de engenharia, arquitetura e urbanismo.</option>
+									<option value="720">720 - Aerofotogrametria (inclusive interpretação), cartografia, mapeamento, levantamentos topográficos, batimétricos, geográficos, geodésicos, geológicos, geofísicos e congêneres.</option>
+									<option value="721">721 - Pesquisa, perfuração, cimentação, mergulho, perfilagem, concretação, testemunhagem, pescaria, estimulação e outros serviços relacionados com a exploração e explotação de petróleo, gás natural e de outros recursos minerais.</option>
+									<option value="722">722 - Nucleação e bombardeamento de nuvens e congêneres.</option>
+									<option value="801">801 - Ensino regular pré-escolar, fundamental, médio e superior.</option>
+									<option value="802">802 - Instrução, treinamento, orientação pedagógica e educacional, avaliação de conhecimentos de qualquer natureza.</option>
+									<option value="901">901 - Hospedagem de qualquer natureza em hotéis, apart-service condominiais, flat, apart-hotéis, hotéis residência, residence-service, suite service, hotelaria marítima, motéis, pensões e congêneres; ocupação por temporada com fornecimento de serviço (o valor da alimentação e gorjeta, quando incluído no preço da diária, fica sujeito ao Imposto Sobre Serviços).</option>
+									<option value="902">902 - Agenciamento, organização, promoção, intermediação e execução de programas de turismo, passeios, viagens, excursões, hospedagens e congêneres.</option>
+									<option value="903">903 - Guias de turismo.</option>
+									<option value="1001">1001 - Agenciamento, corretagem ou intermediação de câmbio, de seguros, de cartões de crédito, de planos de saúde e de planos de previdência privada.</option>
+									<option value="1002">1002 - Agenciamento, corretagem ou intermediação de títulos em geral, valores mobiliários e contratos quaisquer.</option>
+									<option value="1003">1003 - Agenciamento, corretagem ou intermediação de direitos de propriedade industrial, artística ou literária.</option>
+									<option value="1004">1004 - Agenciamento, corretagem ou intermediação de contratos de arrendamento mercantil (leasing), de franquia (franchising) e de faturização (factoring).</option>
+									<option value="1005">1005 - Agenciamento, corretagem ou intermediação de bens móveis ou imóveis, não abrangidos em outros itens ou subitens, inclusive aqueles realizados no âmbito de Bolsas de Mercadorias e Futuros, por quaisquer meios.</option>
+									<option value="1006">1006 - Agenciamento marítimo.</option>
+									<option value="1007">1007 - Agenciamento de notícias.</option>
+									<option value="1008">1008 - Agenciamento de publicidade e propaganda, inclusive o agenciamento de veiculação por quaisquer meios.</option>
+									<option value="1009">1009 - Representação de qualquer natureza, inclusive comercial.</option>
+									<option value="1010">1010 - Distribuição de bens de terceiros.</option>
+									<option value="1101">1101 - Guarda e estacionamento de veículos terrestres automotores, de aeronaves e de embarcações.</option>
+									<option value="1102">1102 - Vigilância, segurança ou monitoramento de bens e pessoas.</option>
+									<option value="1103">1103 - Escolta, inclusive de veículos e cargas.</option>
+									<option value="1104">1104 - Armazenamento, depósito, carga, descarga, arrumação e guarda de bens de qualquer espécie.</option>
+									<option value="1201">1201 - Espetáculos teatrais.</option>
+									<option value="1202">1202 - Exibições cinematográficas.</option>
+									<option value="1203">1203 - Espetáculos circenses.</option>
+									<option value="1204">1204 - Programas de auditório.</option>
+									<option value="1205">1205 - Parques de diversões, centros de lazer e congêneres.</option>
+									<option value="1206">1206 - Boates, taxi-dancing e congêneres.</option>
+									<option value="1207">1207 - Shows, ballet, danças, desfiles, bailes, óperas, concertos, recitais, festivais e congêneres.</option>
+									<option value="1208">1208 - Feiras, exposições, congressos e congêneres.</option>
+									<option value="1209">1209 - Bilhares, boliches e diversões eletrônicas ou não.</option>
+									<option value="1210">1210 - Corridas e competições de animais.</option>
+									<option value="1211">1211 - Competições esportivas ou de destreza física ou intelectual, com ou sem a participação do espectador.</option>
+									<option value="1212">1212 - Execução de música.</option>
+									<option value="1213">1213 - Produção, mediante ou sem encomenda prévia, de eventos, espetáculos, entrevistas, shows, ballet, danças, desfiles, bailes, teatros, óperas, concertos, recitais, festivais e congêneres.</option>
+									<option value="1214">1214 - Fornecimento de música para ambientes fechados ou não, mediante transmissão por qualquer processo.</option>
+									<option value="1215">1215 - Desfiles de blocos carnavalescos ou folclóricos, trios elétricos e congêneres.</option>
+									<option value="1216">1216 - Exibição de filmes, entrevistas, musicais, espetáculos, shows, concertos, desfiles, óperas, competições esportivas, de destreza intelectual ou congêneres.</option>
+									<option value="1217">1217 - Recreação e animação, inclusive em festas e eventos de qualquer natureza.</option>
+									<option value="1302">1302 - Fonografia ou gravação de sons, inclusive trucagem, dublagem, mixagem e congêneres.</option>
+									<option value="1303">1303 - Fotografia e cinematografia, inclusive revelação, ampliação, cópia, reprodução, trucagem e congêneres.</option>
+									<option value="1304">1304 - Reprografia, microfilmagem e digitalização.</option>
+									<option value="1305">1305 - Composição gráfica, fotocomposição, clicheria, zincografia, litografia, fotolitografia.</option>
+									<option value="1401">1401 - Lubrificação, limpeza, lustração, revisão, carga e recarga, conserto, restauração, blindagem, manutenção e conservação de máquinas, veículos, aparelhos, equipamentos, motores, elevadores ou de qualquer objeto (exceto peças e partes empregadas, que ficam sujeitas ao ICMS).</option>
+									<option value="1402">1402 - Assistência técnica.</option>
+									<option value="1403">1403 - Recondicionamento de motores (exceto peças e partes empregadas, que ficam sujeitas ao ICMS).</option>
+									<option value="1404">1404 - Recauchutagem ou regeneração de pneus.</option>
+									<option value="1405">1405 - Restauração, recondicionamento, acondicionamento, pintura, beneficiamento, lavagem, secagem, tingimento, galvanoplastia, anodização, corte, recorte, polimento, plastificação e congêneres, de objetos quaisquer.</option>
+									<option value="1406">1406 - Instalação e montagem de aparelhos, máquinas e equipamentos, inclusive montagem industrial, prestados ao usuário final, exclusivamente com material por ele fornecido.</option>
+									<option value="1407">1407 - Colocação de molduras e congêneres.</option>
+									<option value="1408">1408 - Encadernação, gravação e douração de livros, revistas e congêneres.</option>
+									<option value="1409">1409 - Alfaiataria e costura, quando o material for fornecido pelo usuário final, exceto aviamento.</option>
+									<option value="1410">1410 - Tinturaria e lavanderia.</option>
+									<option value="1411">1411 - Tapeçaria e reforma de estofamentos em geral.</option>
+									<option value="1412">1412 - Funilaria e lanternagem.</option>
+									<option value="1413">1413 - Carpintaria e serralheria.</option>
+									<option value="1501">1501 - Administração de fundos quaisquer, de consórcio, de cartão de crédito ou débito e congêneres, de carteira de clientes, de cheques pré-datados e congêneres.</option>
+									<option value="1502">1502 - Abertura de contas em geral, inclusive conta-corrente, conta de investimentos e aplicação e caderneta de poupança, no País e no exterior, bem como a manutenção das referidas contas ativas e inativas.</option>
+									<option value="1503">1503 - Locação e manutenção de cofres particulares, de terminais eletrônicos, de terminais de atendimento e de bens e equipamentos em geral.</option>
+									<option value="1504">1504 - Fornecimento ou emissão de atestados em geral, inclusive atestado de idoneidade, atestado de capacidade financeira e congêneres.</option>
+									<option value="1505">1505 - Cadastro, elaboração de ficha cadastral, renovação cadastral e congêneres, inclusão ou exclusão no Cadastro de Emitentes de Cheques sem Fundos – CCF ou em quaisquer outros bancos cadastrais.</option>
+									<option value="1506">1506 - Emissão, reemissão e fornecimento de avisos, comprovantes e documentos em geral; abono de firmas; coleta e entrega de documentos, bens e valores; comunicação com outra agência ou com a administração central; licenciamento eletrônico de veículos; transferência de veículos; agenciamento fiduciário ou depositário; devolução de bens em custódia.</option>
+									<option value="1507">1507 - Acesso, movimentação, atendimento e consulta a contas em geral, por qualquer meio ou processo, inclusive por telefone, fac-símile, internet e telex, acesso a terminais de atendimento, inclusive vinte e quatro horas; acesso a outro banco e a rede compartilhada; fornecimento de saldo, extrato e demais informações relativas a contas em geral, por qualquer meio ou processo.</option>
+									<option value="1508">1508 - Emissão, reemissão, alteração, cessão, substituição, cancelamento e registro de contrato de crédito; estudo, análise e avaliação de operações de crédito; emissão, concessão, alteração ou contratação de aval, fiança, anuência e congêneres; serviços relativos a abertura de crédito, para quaisquer fins.</option>
+									<option value="1509">1509 - Arrendamento mercantil (leasing) de quaisquer bens, inclusive cessão de direitos e obrigações, substituição de garantia, alteração, cancelamento e registro de contrato, e demais serviços relacionados ao arrendamento mercantil (leasing).</option>
+									<option value="1510">1510 - Serviços relacionados a cobranças, recebimentos ou pagamentos em geral, de títulos quaisquer, de contas ou carnês, de câmbio, de tributos e por conta de terceiros, inclusive os efetuados por meio eletrônico, automático ou por máquinas de atendimento; fornecimento de posição de cobrança, recebimento ou pagamento; emissão de carnês, fichas de compensação, impressos e documentos em geral.</option>
+									<option value="1511">1511 - Devolução de títulos, protesto de títulos, sustação de protesto, manutenção de títulos, reapresentação de títulos, e demais serviços a eles relacionados.</option>
+									<option value="1512">1512 - Custódia em geral, inclusive de títulos e valores mobiliários.</option>
+									<option value="1513">1513 - Serviços relacionados a operações de câmbio em geral, edição, alteração, prorrogação, cancelamento e baixa de contrato de câmbio; emissão de registro de exportação ou de crédito; cobrança ou depósito no exterior; emissão, fornecimento e cancelamento de cheques de viagem; fornecimento, transferência, cancelamento e demais serviços relativos a carta de crédito de importação, exportação e garantias recebidas; envio e recebimento de mensagens em geral relacionadas a operações de câmbio.</option>
+									<option value="1514">1514 - Fornecimento, emissão, reemissão, renovação e manutenção de cartão magnético, cartão de crédito, cartão de débito, cartão salário e congêneres.</option>
+									<option value="1515">1515 - Compensação de cheques e títulos quaisquer; serviços relacionados a depósito, inclusive depósito identificado, a saque de contas quaisquer, por qualquer meio ou processo, inclusive em terminais eletrônicos e de atendimento.</option>
+									<option value="1516">1516 - Emissão, reemissão, liquidação, alteração, cancelamento e baixa de ordens de pagamento, ordens de crédito e similares, por qualquer meio ou processo; serviços relacionados à transferência de valores, dados, fundos, pagamentos e similares, inclusive entre contas em geral.</option>
+									<option value="1517">1517 - Emissão, fornecimento, devolução, sustação, cancelamento e oposição de cheques quaisquer, avulso ou por talão.</option>
+									<option value="1518">1518 - Serviços relacionados a crédito imobiliário, avaliação e vistoria de imóvel ou obra, análise técnica e jurídica, emissão, reemissão, alteração, transferência e renegociação de contrato, emissão e reemissão do termo de quitação e demais serviços relacionados a crédito imobiliário.</option>
+									<option value="1601">1601 - Serviços de transporte de natureza municipal.</option>
+									<option value="1701">1701 - Assessoria ou consultoria de qualquer natureza, não contida em outros itens desta lista; análise, exame, pesquisa, coleta, compilação e fornecimento de dados e informações de qualquer natureza, inclusive cadastro e similares.</option>
+									<option value="1702">1702 - Datilografia, digitação, estenografia, expediente, secretaria em geral, resposta audível, redação, edição, interpretação, revisão, tradução, apoio e infra-estrutura administrativa e congêneres.</option>
+									<option value="1703">1703 - Planejamento, coordenação, programação ou organização técnica, financeira ou administrativa.</option>
+									<option value="1704">1704 - Recrutamento, agenciamento, seleção e colocação de mão-de-obra.</option>
+									<option value="1705">1705 - Fornecimento de mão-de-obra, mesmo em caráter temporário, inclusive de empregados ou trabalhadores, avulsos ou temporários, contratados pelo prestador de serviço.</option>
+									<option value="1706">1706 - Propaganda e publicidade, inclusive promoção de vendas, planejamento de campanhas ou sistemas de publicidade, elaboração de desenhos, textos e demais materiais publicitários.</option>
+									<option value="1708">1708 - Franquia (franchising).</option>
+									<option value="1709">1709 - Perícias, laudos, exames técnicos e análises técnicas.</option>
+									<option value="1710">1710 - Planejamento, organização e administração de feiras, exposições, congressos e congêneres.</option>
+									<option value="1711">1711 - Organização de festas e recepções; bufê (exceto o fornecimento de alimentação e bebidas, que fica sujeito ao ICMS).</option>
+									<option value="1712">1712 - Administração em geral, inclusive de bens e negócios de terceiros.</option>
+									<option value="1713">1713 - Leilão e congêneres.</option>
+									<option value="1714">1714 - Advocacia.</option>
+									<option value="1715">1715 - Arbitragem de qualquer espécie, inclusive jurídica.</option>
+									<option value="1716">1716 - Auditoria.</option>
+									<option value="1717">1717 - Análise de Organização e Métodos.</option>
+									<option value="1718">1718 - Atuária e cálculos técnicos de qualquer natureza.</option>
+									<option value="1719">1719 - Contabilidade, inclusive serviços técnicos e auxiliares.</option>
+									<option value="1720">1720 - Consultoria e assessoria econômica ou financeira.</option>
+									<option value="1721">1721 - Estatística.</option>
+									<option value="1722">1722 - Cobrança em geral.</option>
+									<option value="1723">1723 - Assessoria, análise, avaliação, atendimento, consulta, cadastro, seleção, gerenciamento de informações, administração de contas a receber ou a pagar e em geral, relacionados a operações de faturização (factoring).</option>
+									<option value="1724">1724 - Apresentação de palestras, conferências, seminários e congêneres.</option>
+									<option value="1801">1801 - Serviços de regulação de sinistros vinculados a contratos de seguros; inspeção e avaliação de riscos para cobertura de contratos de seguros; prevenção e gerência de riscos seguráveis e congêneres.</option>
+									<option value="1901">1901 - Serviços de distribuição e venda de bilhetes e demais produtos de loteria, bingos, cartões, pules ou cupons de apostas, sorteios, prêmios, inclusive os decorrentes de títulos de capitalização e congêneres.</option>
+									<option value="2001">2001 - Serviços portuários, ferroportuários, utilização de porto, movimentação de passageiros, reboque de embarcações, rebocador escoteiro, atracação, desatracação, serviços de praticagem, capatazia, armazenagem de qualquer natureza, serviços acessórios, movimentação de mercadorias, serviços de apoio marítimo, de movimentação ao largo, serviços de armadores, estiva, conferência, logística e congêneres.</option>
+									<option value="2002">2002 - Serviços aeroportuários, utilização de aeroporto, movimentação de passageiros, armazenagem de qualquer natureza, capatazia, movimentação de aeronaves, serviços de apoio aeroportuários, serviços acessórios, movimentação de mercadorias, logística e congêneres.</option>
+									<option value="2003">2003 - Serviços de terminais rodoviários, ferroviários, metroviários, movimentação de passageiros, mercadorias, inclusive    suas operações, logística e congêneres.</option>
+									<option value="2101">2101 - Serviços de registros públicos, cartorários e notariais.</option>
+									<option value="2201">2201 - Serviços de exploração de rodovia mediante cobrança de preço ou pedágio dos usuários, envolvendo execução de serviços de conservação, manutenção, melhoramentos para adequação de capacidade e segurança de trânsito, operação, monitoração, assistência aos usuários e outros serviços definidos em contratos, atos de concessão ou de permissão ou em normas oficiais.</option>
+									<option value="2301">2301 - Serviços de programação e comunicação visual, desenho industrial e congêneres.</option>
+									<option value="2401">2401 - Serviços de chaveiros, confecção de carimbos, placas, sinalização visual, banners, adesivos e congêneres.</option>
+									<option value="2501">2501 - Funerais, inclusive fornecimento de caixão, urna ou esquifes; aluguel de capela; transporte do corpo cadavérico; fornecimento de flores, coroas e outros paramentos; desembaraço de certidão de óbito; fornecimento de véu, essa e outros adornos; embalsamento, embelezamento, conservação ou restauração de cadáveres.</option>
+									<option value="2502">2502 - Cremação de corpos e partes de corpos cadavéricos.</option>
+									<option value="2503">2503 - Planos ou convênio funerários.</option>
+									<option value="2504">2504 - Manutenção e conservação de jazigos e cemitérios.</option>
+									<option value="2601">2601 - Serviços de coleta, remessa ou entrega de correspondências, documentos, objetos, bens ou valores, inclusive pelos correios e suas agências franqueadas; courrier e congêneres.</option>
+									<option value="2701">2701 - Serviços de assistência social.</option>
+									<option value="2801">2801 - Serviços de avaliação de bens e serviços de qualquer natureza.</option>
+									<option value="2901">2901 - Serviços de biblioteconomia.</option>
+									<option value="3001">3001 - Serviços de biologia, biotecnologia e química.</option>
+									<option value="3101">3101 - Serviços técnicos em edificações, eletrônica, eletrotécnica, mecânica, telecomunicações e congêneres.</option>
+									<option value="3201">3201 - Serviços de desenhos técnicos.</option>
+									<option value="3301">3301 - Serviços de desembaraço aduaneiro, comissários, despachantes e congêneres.</option>
+									<option value="3401">3401 - Serviços de investigações particulares, detetives e congêneres.</option>
+									<option value="3501">3501 - Serviços de reportagem, assessoria de imprensa, jornalismo e relações públicas.</option>
+									<option value="3601">3601 - Serviços de meteorologia.</option>
+									<option value="3701">3701 - Serviços de artistas, atletas, modelos e manequins.</option>
+									<option value="3801">3801 - Serviços de museologia.</option>
+									<option value="3901">3901 - Serviços de ourivesaria e lapidação (quando o material for fornecido pelo tomador do serviço).</option>
+									<option value="4001">4001 - Obras de arte sob encomenda.</option>
+							    </select>
+							<br />	
+							
+							
+							<label for="issqn_uf">* UF:</label>
+								<select id="issqn_uf" size="1"  name="issqn_uf">				
+							    <option selected="selected" value=""></option>
+									<option value="AC">Acre</option>
+									<option value="AL">Alagoas</option>
+									<option value="AP">Amapá</option>
+									<option value="AM">Amazonas</option>
+									<option value="BA">Bahia</option>
+									<option value="CE">Ceará</option>
+									<option value="DF">Distrito Federal</option>
+									<option value="ES">Espirito Santo</option>
+									<option value="GO">Goiás</option>
+									<option value="MA">Maranhão</option>
+									<option value="MS">Mato Grosso do Sul</option>
+									<option value="MT">Mato Grosso</option>
+									<option value="MG">Minas Gerais</option>
+									<option value="PA">Pará</option>
+									<option value="PB">Paraíba</option>
+									<option value="PR">Paraná</option>
+									<option value="PE">Pernambuco</option>
+									<option value="PI">Piauí</option>
+									<option value="RJ">Rio de Janeiro</option>
+									<option value="RN">Rio Grande do Norte</option>
+									<option value="RS">Rio Grande do Sul</option>
+									<option value="RO">Rondônia</option>
+									<option value="RR">Roraima</option>
+									<option value="SC">Santa Catarina</option>
+									<option value="SP">São Paulo</option>
+									<option value="SE">Sergipe</option>
+									<option value="TO">Tocantins</option>
+							    </select>
+							<br />			
+							
+							
+							<label for="issqn_municipio_de_ocorrencia">* Município de ocorrência:</label>
+								<select id="issqn_municipio_de_ocorrencia" size="1"  name="issqn_municipio_de_ocorrencia">				
+							    <option selected="selected" value=""></option>
+									<option value="xxx">Amapa</option>
+									
+									<option value="calcoene">Calcoene</option>
+									<option value="cutias">Cutias</option>
+									<option value="ferreira_gomes">Ferreira Gomes</option>
+									<option value="itaubal">Itaubal</option>
+									<option value="laranjal_do_jari">Laranjal do Jari</option>
+									<option value="macap">Macapa</option>
+									<option value="mazagao">Mazagao</option>
+							    </select>
+							<br />									
+																				
+							
+							
+					<label for="issqn_valor_do_issqn">* Valor do ISSQN:</label>
+					<input id="issqn_valor_do_issqn" type="text" name="issqn_valor_do_issqn" /><br />	
+
+												
 				</div><!-- sub-tabs-6 end -->	
 																				
 			</div><!-- sub-tabs end -->
@@ -252,202 +1371,46 @@
 		</fieldset>	
 	</div><!-- tabs-2 end -->
 	
+	
+	<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->	
+	<!-- tabs-3 -->
+	<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+	
 	<div id="tabs-3">
 		<fieldset>
 			<label for="Message">Informações Adicionais:</label>
-			<textarea tabindex="4" id="informacoes_adicionais" name="informacoes_adicionais" rows="10" cols="40"></textarea><br />
+			<textarea id="informacoes_adicionais" name="informacoes_adicionais" rows="10" cols="40"></textarea><br />
 		</fieldset>					
 	</div><!-- tabs-3 end -->
-
+	
+	
+	
+	<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->	
+	<!-- tabs-4 -->
+	<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+	
 	<div id="tabs-4">
-		<p>O que entra aqui?</p>
+		<p>Declarações de importação (100 no máximo)</p>
 	</div><!-- tabs-4 end -->
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<div id="tabs-5">
-		<form  method="post" action="">
-		<fieldset>
-		<legend>Vertical  form </legend>
-		
-			<label for="Name">Name:</label>
-			<input tabindex="1" id="Name" type="text" name="Name" /><br />
-					
-			<label for="City">City:</label>
-			<input tabindex="2" id="City" type="text" name="City" /><br />
-			
-			<label  for="Email" >Email:</label>
-			<input tabindex="3" id="Email" type="text" name="Email" /><br />
-						
-			<label for="Message">Message:</label>
-			<textarea tabindex="4" id="Message" name="Message" rows="20" cols="20"></textarea><br />
-			
-		
-			
-		<label for="Lorem">Message:</label>
-			<select tabindex="5" id="lorem"  name="Lorem ipsum">
-				<option selected="selected" value="1">Lorem ipsum</option>
-				<option value="2">dolor sit amet</option>
-				<option value="3"> consectetuer adipiscing</option>
-				<option value="4">vitae diam</option>
-				<option value="5">Vestibulum ornare</option>
-			</select>
-			
-			
-			
-		<br>
-		<label  for="Pellentesque">Pellentesque habitant:</label>
-			<select tabindex="6" id="Pellentesque" size="1"  name="select">
-		          <optgroup label="Lorem ipsum1">
-		          <option selected="selected" value="1">Nunc urna nulla</option>
-		          <option value="2">ultrices sit amet</option>
-		          <option value="3">cursus faucibus</option>
-		          <option value="4">tincidunt pellentesque</option>
-		          <option value="5">ante</option>
-		          </optgroup>
-		          <optgroup label="Lorem ipsum2">
-		          <option selected="selected" value="6">Nunc ac diam</option>
-		          <option value="7">Donec orci risus</option>
-		          <option value="8">malesuada quis</option>
-		          <option value="9">vulputate eu</option>
-		          <option value="10">lacinia in</option>
-		          </optgroup>
-		      </select>
-		<br />
-		<br />
-		<label>Lorem ipsum1:</label>
-			<input tabindex="7" type="radio" name="radioSet" value="uno" />Uno<br />
-			<input tabindex="8" type="radio" name="radioSet"  value="due" />Due<br />
-			<input tabindex="9" type="radio" name="radioSet"  value="tre" />Tre<br />
-			<br />
-			<label>Lorem ipsum2:</label>
-			<input tabindex="10" type="checkbox" name="checkSet"  value="one" /> One<br />
-			<input tabindex="11" type="checkbox" name="checkSet"  value="two" /> Two<br />
-			<input tabindex="12" type="checkbox" name="checkSet"  value="three" /> Three<br />
-		
-		
-		
-		 
-		<br />
-			<input tabindex="12"  type="submit" name="submit" value="Submit"  />
-			
-		</fieldset>
-		</form>		
-	</div><!-- tabs-5 end -->	
-		
+	</form>
 </div>
 
 </div><!-- End demo -->
 
 
-
-
-
-
-
-<!--
-
-
-
-		<form  method="post" action="">
-		<fieldset>
-		<legend>Vertical  form </legend>
-		
-			<label for="Name">Name:</label>
-			<input tabindex="1" id="Name" type="text" name="Name" /><br />
-					
-			<label for="City">City:</label>
-			<input tabindex="2" id="City" type="text" name="City" /><br />
-			
-			<label  for="Email" >Email:</label>
-			<input tabindex="3" id="Email" type="text" name="Email" /><br />
-						
-			<label for="Message">Message:</label>
-			<textarea tabindex="4" id="Message" name="Message" rows="20" cols="20"></textarea><br />
-			
-		
-			
-		<label for="Lorem">Message:</label>
-			<select tabindex="5" id="lorem"  name="Lorem ipsum">
-				<option selected="selected" value="1">Lorem ipsum</option>
-				<option value="2">dolor sit amet</option>
-				<option value="3"> consectetuer adipiscing</option>
-				<option value="4">vitae diam</option>
-				<option value="5">Vestibulum ornare</option>
-			</select>
-			
-			
-			
-		<br>
-		<label  for="Pellentesque">Pellentesque habitant:</label>
-			<select tabindex="6" id="Pellentesque" size="1"  name="select">
-		          <optgroup label="Lorem ipsum1">
-		          <option selected="selected" value="1">Nunc urna nulla</option>
-		          <option value="2">ultrices sit amet</option>
-		          <option value="3">cursus faucibus</option>
-		          <option value="4">tincidunt pellentesque</option>
-		          <option value="5">ante</option>
-		          </optgroup>
-		          <optgroup label="Lorem ipsum2">
-		          <option selected="selected" value="6">Nunc ac diam</option>
-		          <option value="7">Donec orci risus</option>
-		          <option value="8">malesuada quis</option>
-		          <option value="9">vulputate eu</option>
-		          <option value="10">lacinia in</option>
-		          </optgroup>
-		      </select>
-		<br />
-		<br />
-		<label>Lorem ipsum1:</label>
-			<input tabindex="7" type="radio" name="radioSet" value="uno" />Uno<br />
-			<input tabindex="8" type="radio" name="radioSet"  value="due" />Due<br />
-			<input tabindex="9" type="radio" name="radioSet"  value="tre" />Tre<br />
-			<br />
-			<label>Lorem ipsum2:</label>
-			<input tabindex="10" type="checkbox" name="checkSet"  value="one" /> One<br />
-			<input tabindex="11" type="checkbox" name="checkSet"  value="two" /> Two<br />
-			<input tabindex="12" type="checkbox" name="checkSet"  value="three" /> Three<br />
-		
-		
-		
-		 
-		<br />
-			<input tabindex="12"  type="submit" name="submit" value="Submit"  />
-			
-		</fieldset>
+<!-- 
+<div id='log' style='padding: 20px; border: 1px dotted red;'>
+			</div>
+				
+							
+	
+		<hr>
+		<form action="vaila.php">
+			informe: <input name='informe' /><br>
+			<div id='inputs-hid'>
+			</div>
+			<input type='submit' />
 		</form>
-	-->
-		
-<input tabindex="12"  type="submit" name="submit" value="Submit"  />
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
+		 -->
 </body>
 </html>
